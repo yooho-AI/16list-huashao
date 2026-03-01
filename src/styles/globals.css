@@ -512,56 +512,141 @@ body {
 }
 
 /* ================================================================
-   快捷操作按钮
+   动态选项列表
    ================================================================ */
 
-.hs-quick-grid {
+.hs-choice-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 8px 16px;
 }
 
-.hs-quick-btn {
-  position: relative;
-  padding: 10px 20px;
-  background: transparent;
-  border: 1px solid rgba(var(--primary-rgb), 0.18);
-  border-radius: 28px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+.hs-choice-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(var(--primary-rgb), 0.03);
+  border: 1px solid rgba(var(--primary-rgb), 0.15);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-align: center;
-  overflow: hidden;
+  transition: all 0.2s;
+  text-align: left;
 }
 
-/* shimmer 微光扫过 */
-.hs-quick-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(var(--primary-rgb), 0.06) 50%, transparent 60%);
-  transform: translateX(-120%);
-  transition: transform 0.6s ease;
+.hs-choice-btn:active {
+  background: rgba(var(--primary-rgb), 0.1);
+  transform: scale(0.98);
 }
 
-.hs-quick-btn:hover::before {
-  transform: translateX(120%);
-}
-
-.hs-quick-btn:active {
-  background: rgba(var(--primary-rgb), 0.08);
-  border-color: var(--border-glow);
-  color: var(--primary);
-  box-shadow: 0 0 16px rgba(var(--primary-rgb), 0.1);
-}
-
-.hs-quick-btn:disabled {
+.hs-choice-btn:disabled {
   opacity: 0.35;
   pointer-events: none;
+}
+
+.hs-choice-idx {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(var(--primary-rgb), 0.12);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   Markdown 渲染 + 数值着色
+   ================================================================ */
+
+.stat-change {
+  display: inline-block;
+  margin-right: 6px;
+  font-weight: 600;
+}
+
+.stat-up {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+.stat-down {
+  color: #f87171;
+  font-weight: 700;
+}
+
+.item-gain {
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 2px 0;
+  background: rgba(var(--star-gold-rgb), 0.1);
+  border: 1px solid rgba(var(--star-gold-rgb), 0.25);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--star-gold);
+}
+
+.char-name {
+  font-weight: 600;
+}
+
+/* NPC 气泡内 Markdown 样式 */
+.hs-npc-bubble p {
+  margin: 0 0 0.4em 0;
+}
+
+.hs-npc-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.hs-npc-bubble ul,
+.hs-npc-bubble ol {
+  margin: 0.3em 0;
+  padding-left: 1.4em;
+}
+
+.hs-npc-bubble li {
+  margin-bottom: 0.15em;
+}
+
+.hs-npc-bubble blockquote {
+  margin: 0.4em 0;
+  padding-left: 10px;
+  border-left: 2px solid rgba(var(--primary-rgb), 0.3);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.hs-npc-bubble strong {
+  color: var(--primary);
+}
+
+.hs-npc-bubble em {
+  color: var(--text-secondary);
+}
+
+.hs-npc-bubble table {
+  border-collapse: collapse;
+  margin: 0.4em 0;
+  font-size: 12px;
+}
+
+.hs-npc-bubble th,
+.hs-npc-bubble td {
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+}
+
+.hs-npc-bubble th {
+  background: rgba(var(--primary-rgb), 0.05);
+  font-weight: 600;
 }
 
 /* ================================================================

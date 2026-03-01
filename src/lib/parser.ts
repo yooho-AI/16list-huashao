@@ -1,11 +1,13 @@
 /**
- * [INPUT]: 无外部依赖（不 import data.ts，避免循环依赖）
- * [OUTPUT]: 对外提供 parseStoryParagraph 解析函数
- * [POS]: AI 回复文本解析，角色名着色 + 数值着色
+ * [INPUT]: marked (Markdown渲染)，无项目内依赖（避免循环引用 data.ts）
+ * [OUTPUT]: parseStoryParagraph (narrative + statHtml + charColor), extractChoices (cleanContent + choices)
+ * [POS]: lib AI 回复解析层，Markdown 渲染 + charColor 驱动气泡左边框 + 选项提取
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
-// ── 角色颜色映射（硬编码，不 import data.ts）──────────
+import { marked } from 'marked'
+
+// ── 角色名 → 主题色（手动同步 data.ts，不 import 避免循环依赖） ──
 
 const CHARACTER_COLORS: Record<string, string> = {
   '秦悦': '#8B4789',
@@ -16,7 +18,7 @@ const CHARACTER_COLORS: Record<string, string> = {
   '李慕白': '#C49A6C',
 }
 
-// ── 属性颜色映射 ────────────────────────────────────
+// ── 数值标签 → 颜色 ──
 
 const STAT_COLORS: Record<string, string> = {
   '团队凝聚力': '#FF7EB3',
@@ -34,7 +36,106 @@ const STAT_COLORS: Record<string, string> = {
   '好感': '#FF7EB3',
 }
 
-// ── 解析函数 ─────────────────────────────────────────
+// ── 工具函数 ──
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+function colorizeStats(line: string): string {
+  let html = line
+
+  // 属性名着色
+  for (const [label, color] of Object.entries(STAT_COLORS)) {
+    html = html.replaceAll(
+      label,
+      `<span class="stat-change" style="color:${color};font-weight:600">${label}</span>`,
+    )
+  }
+
+  // 角色名着色
+  for (const [name, color] of Object.entries(CHARACTER_COLORS)) {
+    html = html.replaceAll(
+      name,
+      `<span class="char-name" style="color:${color};font-weight:600">${name}</span>`,
+    )
+  }
+
+  // 数值变化着色（+绿 -红）
+  html = html.replace(
+    /(\+\d+[万%]?)/g,
+    '<span class="stat-up">$1</span>',
+  )
+  html = html.replace(
+    /(-\d+[万%]?)/g,
+    '<span class="stat-down">$1</span>',
+  )
+
+  return html
+}
+
+function colorizeCharNames(html: string): string {
+  let result = html
+  for (const [name, color] of Object.entries(CHARACTER_COLORS)) {
+    result = result.replaceAll(
+      name,
+      `<span class="char-name" style="color:${color};font-weight:600">${name}</span>`,
+    )
+  }
+  return result
+}
+
+// ── 选项提取 ──
+
+export function extractChoices(content: string): {
+  cleanContent: string
+  choices: string[]
+} {
+  const lines = content.split('\n')
+  const choices: string[] = []
+  let choiceStartIdx = lines.length
+
+  // Scan from end for consecutive numbered choice lines
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const trimmed = lines[i].trim()
+    if (!trimmed && choices.length > 0) continue // skip empty lines between choices
+    if (!trimmed && choices.length === 0) continue // skip trailing empty lines
+
+    if (/^[1-4][\.、．]\s*.+/.test(trimmed) || /^[A-Da-d][\.、．]\s*.+/.test(trimmed)) {
+      choices.unshift(trimmed.replace(/^[1-4A-Da-d][\.、．]\s*/, ''))
+      choiceStartIdx = i
+    } else {
+      break
+    }
+  }
+
+  if (choices.length < 2) return { cleanContent: content, choices: [] }
+
+  // Also remove header line like "你的选择：" or "**选项：**"
+  let cutIdx = choiceStartIdx
+  if (cutIdx > 0) {
+    const prevLine = lines[cutIdx - 1].trim()
+    if (/选择|选项|你可以|接下来|你的行动/.test(prevLine)) {
+      cutIdx -= 1
+    }
+  }
+
+  // Skip empty line before header
+  if (cutIdx > 0 && !lines[cutIdx - 1].trim()) {
+    cutIdx -= 1
+  }
+
+  return {
+    cleanContent: lines.slice(0, cutIdx).join('\n').trim(),
+    choices,
+  }
+}
+
+// ── 主解析函数 ──
 
 export function parseStoryParagraph(content: string): {
   narrative: string
@@ -43,70 +144,60 @@ export function parseStoryParagraph(content: string): {
 } {
   const lines = content.split('\n')
   const narrativeLines: string[] = []
-  const statLines: string[] = []
+  const statParts: string[] = []
   let charColor: string | null = null
 
-  for (const line of lines) {
-    const trimmed = line.trim()
+  for (const raw of lines) {
+    const line = raw.trim()
 
-    // 检测属性变化行
-    if (/【.*变化】/.test(trimmed) || /^[【\[]?(属性|数值|状态)/.test(trimmed) || /[+\-]\d+/.test(trimmed)) {
-      let html = trimmed
+    // Preserve empty lines for markdown paragraph breaks
+    if (!line) { narrativeLines.push(''); continue }
 
-      // 角色名着色
-      for (const [name, color] of Object.entries(CHARACTER_COLORS)) {
-        html = html.replace(
-          new RegExp(name, 'g'),
-          `<span style="color:${color};font-weight:600">${name}</span>`,
-        )
-      }
-
-      // 属性名着色
-      for (const [label, color] of Object.entries(STAT_COLORS)) {
-        html = html.replace(
-          new RegExp(label, 'g'),
-          `<span style="color:${color};font-weight:600">${label}</span>`,
-        )
-      }
-
-      // 数值变化着色（+绿 -红）
-      html = html.replace(
-        /(\+\d+[万%]?)/g,
-        '<span style="color:#4ade80;font-weight:700">$1</span>',
-      )
-      html = html.replace(
-        /(-\d+[万%]?)/g,
-        '<span style="color:#f87171;font-weight:700">$1</span>',
-      )
-
-      statLines.push(html)
+    // 纯数值变化行：【好感度+10 信任度-5】
+    if (/^[【\[][^】\]]*[+-]\d+[^】\]]*[】\]]$/.test(line)) {
+      statParts.push(colorizeStats(line))
       continue
     }
 
-    narrativeLines.push(trimmed)
+    // 获得物品
+    if (line.startsWith('【获得') || line.startsWith('[获得')) {
+      statParts.push(`<div class="item-gain">${escapeHtml(line)}</div>`)
+      continue
+    }
+
+    // Detect charColor from 【角色名】 pattern
+    if (!charColor) {
+      const charMatch = line.match(/^[【\[]([^\]】]+)[】\]]/)
+      if (charMatch) {
+        charColor = CHARACTER_COLORS[charMatch[1]] || null
+      }
+    }
+
+    narrativeLines.push(raw)
   }
 
-  // 检测第一个出现的角色名，提取主题色
-  const narrative = narrativeLines.join('\n')
-  for (const [name, color] of Object.entries(CHARACTER_COLORS)) {
-    if (narrative.includes(name)) {
-      charColor = color
-      break
+  // Render narrative through marked (Markdown → HTML)
+  const rawNarrative = narrativeLines.join('\n').trim()
+  const html = rawNarrative ? (marked.parse(rawNarrative, { breaks: true, gfm: true }) as string) : ''
+
+  // Apply character name coloring on rendered HTML
+  const narrative = colorizeCharNames(html)
+
+  // Fallback: detect charColor from any character name in content
+  if (!charColor) {
+    for (const [name, color] of Object.entries(CHARACTER_COLORS)) {
+      if (content.includes(name)) {
+        charColor = color
+        break
+      }
     }
   }
 
-  // 叙事部分也做角色名着色
-  let narrativeHtml = narrative
-  for (const [name, color] of Object.entries(CHARACTER_COLORS)) {
-    narrativeHtml = narrativeHtml.replace(
-      new RegExp(name, 'g'),
-      `<span style="color:${color};font-weight:600">${name}</span>`,
-    )
-  }
-
   return {
-    narrative: narrativeHtml,
-    statHtml: statLines.join('<br/>'),
+    narrative,
+    statHtml: statParts.length > 0
+      ? `<div class="stat-changes">${statParts.join('')}</div>`
+      : '',
     charColor,
   }
 }

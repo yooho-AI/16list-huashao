@@ -11,10 +11,10 @@ import {
   useGameStore,
   SCENES,
   ITEMS,
-  QUICK_ACTIONS,
   parseStoryParagraph,
   type Message,
 } from '@/lib/store'
+import { Backpack, PaperPlaneRight } from '@phosphor-icons/react'
 
 // ── LetterCard — Welcome message (first system message) ─────────
 
@@ -108,11 +108,10 @@ function NpcBubble({
         )}
         <div
           className="hs-npc-bubble"
-          style={{ borderLeft: `3px solid ${borderColor}` }}
+          style={{ borderLeft: `3px solid ${borderColor}`, width: '100%' }}
         >
           <div
             dangerouslySetInnerHTML={{ __html: narrative }}
-            style={{ whiteSpace: 'pre-line' }}
           />
           {statHtml && (
             <div
@@ -157,7 +156,6 @@ function StreamingMessage({ content }: { content: string }) {
           <div className="hs-npc-bubble" style={{ borderLeft: '3px solid var(--primary)' }}>
             <div
               dangerouslySetInnerHTML={{ __html: narrative }}
-              style={{ whiteSpace: 'pre-line' }}
             />
             {statHtml && (
               <div
@@ -192,32 +190,32 @@ function StreamingMessage({ content }: { content: string }) {
   )
 }
 
-// ── QuickActions — 2x2 action grid ──────────────────────────────
+// ── ChoiceList — Dynamic AI-generated choices ───────────────────
 
-function QuickActions({
+function ChoiceList({
+  choices,
   onAction,
   disabled,
 }: {
+  choices: string[]
   onAction: (text: string) => void
   disabled: boolean
 }) {
+  if (choices.length === 0) return null
+
   return (
-    <div className="hs-quick-grid" style={{ padding: '6px 12px' }}>
-      {QUICK_ACTIONS.map((action) => {
-        const emoji = action.slice(0, 2)
-        const label = action.slice(2).trim()
-        return (
-          <button
-            key={action}
-            className="hs-quick-btn"
-            disabled={disabled}
-            onClick={() => onAction(action)}
-          >
-            <span className="hs-quick-emoji">{emoji}</span>
-            <span className="hs-quick-label">{label}</span>
-          </button>
-        )
-      })}
+    <div className="hs-choice-list">
+      {choices.map((action, idx) => (
+        <button
+          key={`${action}-${idx}`}
+          className="hs-choice-btn"
+          disabled={disabled}
+          onClick={() => onAction(action)}
+        >
+          <span className="hs-choice-idx">{idx + 1}</span>
+          {action}
+        </button>
+      ))}
     </div>
   )
 }
@@ -314,9 +312,9 @@ function InputArea({
         className="hs-icon-btn"
         onClick={onToggleInventory}
         title="背包"
-        style={{ fontSize: 18, flexShrink: 0 }}
+        style={{ flexShrink: 0 }}
       >
-        🎒
+        <Backpack size={20} />
       </button>
       <input
         className="hs-input"
@@ -332,7 +330,7 @@ function InputArea({
         disabled={disabled || !input.trim()}
         title="发送"
       >
-        ▶
+        <PaperPlaneRight size={18} weight="fill" />
       </button>
     </div>
   )
@@ -348,6 +346,7 @@ export default function TabDialogue() {
   const streamingContent = useGameStore((s) => s.streamingContent)
   const sendMessage = useGameStore((s) => s.sendMessage)
   const characters = useGameStore((s) => s.characters)
+  const choices = useGameStore((s) => s.choices)
 
   const [input, setInput] = useState('')
   const [showInventory, setShowInventory] = useState(false)
@@ -393,8 +392,9 @@ export default function TabDialogue() {
         <div style={{ height: 8 }} />
       </div>
 
-      {/* ── Quick Actions ── */}
-      <QuickActions
+      {/* ── Dynamic Choices ── */}
+      <ChoiceList
+        choices={choices}
         onAction={(text) => {
           if (!isTyping) sendMessage(text)
         }}

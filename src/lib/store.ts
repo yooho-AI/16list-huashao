@@ -26,7 +26,7 @@ import {
   STORY_INFO,
   buildCharacters,
 } from './data'
-import { parseStoryParagraph } from './parser'
+import { parseStoryParagraph, extractChoices } from './parser'
 import {
   trackGameStart,
   trackPlayerCreate,
@@ -58,7 +58,7 @@ export {
   STORY_INFO,
   QUICK_ACTIONS,
 } from './data'
-export { parseStoryParagraph } from './parser'
+export { parseStoryParagraph, extractChoices } from './parser'
 
 // ── Helpers ──────────────────────────────────────────
 
@@ -100,6 +100,8 @@ interface GameState {
   endingType: string | null
 
   activeTab: 'dialogue' | 'scene' | 'character'
+  choices: string[]
+
   showDashboard: boolean
   showRecords: boolean
   storyRecords: StoryRecord[]
@@ -240,7 +242,19 @@ ${state.historySummary || '旅程刚刚开始'}
 - 角色对话用引号：秦悦微微一笑："小姑娘，未来可期。"
 - 数值变化：【团队凝聚力+8】【秦悦 好感+5】【身心状态-10】
 - 保持综艺真人秀的叙事风格，镜头感强，穿插旁白和花字
-- 严格遵循剧本中的角色性格、隐藏关系和事件触发条件`
+- 严格遵循剧本中的角色性格、隐藏关系和事件触发条件
+
+## 选项系统（必须严格遵守）
+每次回复末尾必须给出恰好4个行动选项，格式严格如下：
+1. 选项文本（简洁，15字以内）
+2. 选项文本
+3. 选项文本
+4. 选项文本
+规则：
+- 必须恰好4个，不能多也不能少
+- 选项前不要加"你的选择"等标题行
+- 选项应涵盖不同的情感策略和行动方向
+- 每个选项要具体、有剧情推动力，不要笼统`
 }
 
 // ── Chain Reactions ──────────────────────────────────
@@ -305,6 +319,8 @@ export const useGameStore = create<GameStore>()(
 
     endingType: null,
 
+    choices: [],
+
     activeTab: 'dialogue',
     showDashboard: false,
     showRecords: false,
@@ -347,6 +363,8 @@ export const useGameStore = create<GameStore>()(
           title: '星光之旅开启',
           content: `${s.playerName}正式加入花少团，旅程从此刻开始。`,
         })
+
+        s.choices = ['查看嘉宾资料', '浏览旅行地点', '整理行李', '和经纪人聊聊']
       })
     },
 
@@ -475,6 +493,32 @@ export const useGameStore = create<GameStore>()(
           }
         }
 
+        // Extract choices from AI response
+        const { cleanContent, choices: parsedChoices } = extractChoices(fullContent)
+
+        // Fallback: if AI didn't return enough choices, generate context-aware ones
+        const finalChoices = parsedChoices.length >= 2 ? parsedChoices : (() => {
+          const currentState2 = get()
+          const char = currentState2.currentCharacter
+            ? currentState2.characters[currentState2.currentCharacter]
+            : null
+          if (char) {
+            return [
+              `继续和${char.name}聊天`,
+              `向${char.name}表达好感`,
+              `试探${char.name}的真实想法`,
+              '换个话题聊聊',
+            ]
+          }
+          const scene = SCENES[currentState2.currentScene]
+          return [
+            `探索${scene?.name || '周围'}`,
+            '和团员们聊天',
+            '查看个人状态',
+            '自由行动',
+          ]
+        })()
+
         set((s) => {
           // Apply character stat changes
           for (const change of charChanges) {
@@ -501,14 +545,16 @@ export const useGameStore = create<GameStore>()(
           // Chain reactions
           applyChainReactions(s)
 
-          // Push assistant message
+          // Push assistant message (with clean content, choices stored separately)
           s.messages.push({
             id: makeId(),
             role: 'assistant',
-            content: fullContent,
+            content: cleanContent,
             timestamp: Date.now(),
             character: detectedChar || undefined,
           })
+
+          s.choices = finalChoices.slice(0, 4)
 
           // Record
           const period = PERIODS[s.currentPeriodIndex] || PERIODS[0]
@@ -517,7 +563,7 @@ export const useGameStore = create<GameStore>()(
             day: s.currentDay,
             period,
             title: content.slice(0, 20) + (content.length > 20 ? '...' : ''),
-            content: fullContent.slice(0, 100) + '...',
+            content: cleanContent.slice(0, 100) + '...',
           })
 
           s.isTyping = false
@@ -734,6 +780,7 @@ export const useGameStore = create<GameStore>()(
         s.historySummary = ''
         s.isTyping = false
         s.streamingContent = ''
+        s.choices = []
         s.endingType = null
         s.activeTab = 'dialogue'
         s.showDashboard = false
