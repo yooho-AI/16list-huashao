@@ -26,17 +26,27 @@ const CHAT_MESSAGES = [
   { text: '记住：少说话，多微笑，千万别站错队', warn: true },
 ]
 
-// ── 热搜数据 ────────────────────────────────────────
+// ── 微博热搜数据 ────────────────────────────────────
 
-const HOT_ITEMS = [
-  { tag: '#影后秦悦加盟花少#', text: '十年来首次参加综艺，据传要求极高', portrait: '/characters/qinyue.jpg', rank: 1 },
-  { tag: '#苏蔓秦悦同框#', text: '十年宿敌同住一屋？够吃21天的瓜', portrait: '/characters/suman.jpg', rank: 2 },
-  { tag: '#陈宇轩生活白痴#', text: '顶流歌手被曝连泡面都不会煮', portrait: '/characters/chenyuxuan.jpg', rank: 3 },
-  { tag: '#陆子昂国民男友#', text: '最年轻男嘉宾，和新晋小花年龄最接近👀', portrait: '/characters/luziang.jpg', rank: 4 },
-  { tag: '#沈哲远花少#', text: '金牌主持人坐镇，据说私下非常温柔', portrait: '/characters/shenzheyuan.jpg', rank: 5 },
-  { tag: '#李慕白主动管钱#', text: '55岁老艺术家自告奋勇当财务，靠谱吗？', portrait: '/characters/limubai.jpg', rank: 6 },
-  { tag: '#花少第七位嘉宾是谁#', text: '新晋小花即将公布，今年最大黑马', portrait: '', rank: 0, isPlayer: true },
+const HOT_ITEMS: Array<{
+  title: string; desc: string; reads: string;
+  badge?: 'hot' | 'boil' | 'new'; portrait?: string;
+  isPlayer?: boolean;
+}> = [
+  { title: '影后秦悦加盟花少', desc: '十年来首次参加综艺，据传要求极高', reads: '3.2亿', badge: 'boil', portrait: '/characters/qinyue.jpg' },
+  { title: '苏蔓秦悦同框', desc: '十年宿敌同住一屋？够吃21天的瓜', reads: '2.8亿', badge: 'hot', portrait: '/characters/suman.jpg' },
+  { title: '陈宇轩生活白痴', desc: '顶流歌手被曝连泡面都不会煮', reads: '1.9亿', badge: 'hot', portrait: '/characters/chenyuxuan.jpg' },
+  { title: '陆子昂国民男友', desc: '最年轻男嘉宾，和新晋小花年龄最接近', reads: '1.5亿', badge: 'new', portrait: '/characters/luziang.jpg' },
+  { title: '沈哲远花少', desc: '金牌主持人坐镇，据说私下非常温柔', reads: '1.1亿', portrait: '/characters/shenzheyuan.jpg' },
+  { title: '李慕白主动管钱', desc: '55岁老艺术家自告奋勇当财务，靠谱吗？', reads: '8600万', portrait: '/characters/limubai.jpg' },
+  { title: '花少第七位嘉宾是谁', desc: '新晋小花即将公布，今年最大黑马', reads: '6.7亿', badge: 'boil', isPlayer: true },
 ]
+
+const BADGE_MAP = {
+  hot: { cls: 'hs-wb-badge-hot', text: '热' },
+  boil: { cls: 'hs-wb-badge-boil', text: '沸' },
+  new: { cls: 'hs-wb-badge-new', text: '新' },
+}
 
 // ── Opening Screen ──────────────────────────────────
 
@@ -108,17 +118,18 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
           ))}
         </div>
         <div className="hs-landing-content">
+          <div className="hs-landing-emoji">✨</div>
           <div className="hs-landing-logo">花儿与少年</div>
           <div className="hs-landing-sub">星 光 之 旅</div>
           <div className="hs-landing-actions">
             <button
-              className="hs-phone-cta"
+              className="hs-landing-start"
               onClick={() => { initBGM(); setPhase('chat') }}
             >
               开始游戏
             </button>
             {hasSave() && (
-              <button className="hs-phone-secondary" onClick={handleContinue}>
+              <button className="hs-landing-continue" onClick={handleContinue}>
                 继续游戏
               </button>
             )}
@@ -128,57 +139,74 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
     )
   }
 
-  // ── Phase 1: 经纪人深夜消息 ──
+  // ── Phase 1: 微信聊天 ──
   if (phase === 'chat') {
     return (
-      <div className="hs-phone">
-        <div className="hs-phone-status">
-          <span className="hs-phone-time">23:47</span>
+      <div className="hs-wechat">
+        {/* 微信导航栏 */}
+        <div className="hs-wx-nav">
+          <div className="hs-wx-nav-back">‹</div>
+          <div className="hs-wx-nav-title">经纪人·姐姐</div>
+          <div className="hs-wx-nav-more">⋯</div>
         </div>
 
-        <div className="hs-phone-chat">
-          {/* 发送者头部 */}
-          <div className="hs-chat-sender">
-            <div className="hs-chat-avatar">👩</div>
-            <span className="hs-chat-name">经纪人 · 姐姐</span>
-          </div>
+        {/* 聊天区域 */}
+        <div className="hs-wx-chat">
+          {/* 时间戳 */}
+          <div className="hs-wx-timestamp">23:47</div>
 
-          {/* 消息气泡 */}
+          {/* 消息 */}
           {CHAT_MESSAGES.slice(0, chatIndex).map((msg, i) => (
             <motion.div
               key={i}
-              className={`hs-chat-bubble ${msg.warn ? 'hs-chat-bubble-warning' : ''}`}
-              initial={{ opacity: 0, y: 12, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.35, type: 'spring', stiffness: 400, damping: 25 }}
+              className="hs-wx-msg-row"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, type: 'spring', stiffness: 400, damping: 30 }}
             >
-              {msg.warn ? '⚠️ ' : ''}{msg.text}
+              {i === 0 && <div className="hs-wx-avatar">👩</div>}
+              {i !== 0 && <div style={{ width: 40, flexShrink: 0 }} />}
+              <div className={`hs-wx-bubble ${msg.warn ? 'hs-wx-bubble-warn' : ''}`}>
+                {msg.warn ? '⚠️ ' : ''}{msg.text}
+              </div>
             </motion.div>
           ))}
 
-          {/* 打字中 */}
+          {/* 打字指示器 */}
           {!chatDone && chatIndex < CHAT_MESSAGES.length && (
-            <div className="hs-chat-typing">
-              <div className="hs-chat-typing-dot" />
-              <div className="hs-chat-typing-dot" />
-              <div className="hs-chat-typing-dot" />
+            <div className="hs-wx-msg-row">
+              {chatIndex === 0 && <div className="hs-wx-avatar">👩</div>}
+              {chatIndex !== 0 && <div style={{ width: 40, flexShrink: 0 }} />}
+              <div className="hs-wx-typing">
+                <div className="hs-wx-typing-dot" />
+                <div className="hs-wx-typing-dot" />
+                <div className="hs-wx-typing-dot" />
+              </div>
             </div>
           )}
         </div>
 
-        {/* 底部按钮 */}
+        {/* 底部输入栏（装饰） */}
+        <div className="hs-wx-input-bar">
+          <span className="hs-wx-input-icon">🎤</span>
+          <div className="hs-wx-input-field" />
+          <span className="hs-wx-input-icon">😊</span>
+          <span className="hs-wx-input-icon">＋</span>
+        </div>
+
+        {/* 消息结束后浮出CTA */}
         {chatDone && (
           <motion.div
-            className="hs-phone-actions"
+            className="hs-wx-cta-wrap"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
             <button
-              className="hs-phone-cta"
+              className="hs-wx-cta"
               onClick={() => setPhase('hotsearch')}
             >
-              查看嘉宾名单
+              去微博看嘉宾名单
             </button>
           </motion.div>
         )}
@@ -186,73 +214,82 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
     )
   }
 
-  // ── Phase 2: 热搜速览 ──
+  // ── Phase 2: 微博热搜 ──
   if (phase === 'hotsearch') {
     return (
-      <div className="hs-hotsearch">
-        <div className="hs-hot-header">
-          <div className="hs-hot-search-bar">花儿与少年 星光之旅</div>
-          <span className="hs-hot-label">热搜</span>
+      <div className="hs-weibo">
+        {/* 微博导航 */}
+        <div className="hs-wb-nav">
+          <div className="hs-wb-search">
+            <span className="hs-wb-search-icon">🔍</span>
+            花儿与少年 星光之旅
+          </div>
         </div>
 
-        <div className="hs-hot-feed">
-          {HOT_ITEMS.slice(0, hotIndex).map((item, i) => (
-            <motion.div
-              key={i}
-              className={`hs-hot-card ${item.isPlayer ? 'hs-hot-card-player' : ''}`}
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, type: 'spring', stiffness: 300, damping: 25 }}
-            >
-              {item.portrait ? (
-                <img
-                  className="hs-hot-card-portrait"
-                  src={item.portrait}
-                  alt=""
-                />
-              ) : (
-                <div
-                  className="hs-hot-card-portrait"
-                  style={{
-                    background: 'linear-gradient(135deg, #FF7EB3, #FFD700)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 20, color: 'white',
-                  }}
-                >
-                  ?
-                </div>
-              )}
-              <div className="hs-hot-card-body">
-                <div className="hs-hot-card-tag">
-                  <span className="hs-fire">🔥</span>
-                  {item.tag}
-                </div>
-                <div className="hs-hot-card-text">{item.text}</div>
-                <div className="hs-hot-card-meta">
-                  {item.rank > 0 && <span className="hs-hot-badge">热搜 #{item.rank}</span>}
-                  <span>{Math.floor(Math.random() * 500 + 100)}万讨论</span>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+        {/* Tab栏 */}
+        <div className="hs-wb-tabs">
+          <button className="hs-wb-tab">综合</button>
+          <button className="hs-wb-tab hs-wb-tab-active">热搜</button>
+          <button className="hs-wb-tab">视频</button>
+          <button className="hs-wb-tab">用户</button>
+        </div>
 
-          {/* 加载中 */}
+        {/* 热搜榜标题 */}
+        <div className="hs-wb-list-header">
+          <span className="hs-wb-list-title">微博热搜</span>
+          <span className="hs-wb-list-time">刚刚更新</span>
+        </div>
+
+        {/* 热搜列表 */}
+        <div className="hs-wb-feed">
+          {HOT_ITEMS.slice(0, hotIndex).map((item, i) => {
+            const rankCls = i < 1 ? 'hs-wb-rank-top' : i < 3 ? 'hs-wb-rank-mid' : 'hs-wb-rank-low'
+            return (
+              <motion.div
+                key={i}
+                className={`hs-wb-item ${item.isPlayer ? 'hs-wb-item-player' : ''}`}
+                initial={{ opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.35, type: 'spring', stiffness: 350, damping: 30 }}
+              >
+                <div className={`hs-wb-rank ${rankCls}`}>{i + 1}</div>
+                <div className="hs-wb-item-body">
+                  <div className="hs-wb-item-title">
+                    {item.title}
+                    {item.badge && (
+                      <span className={`hs-wb-badge ${BADGE_MAP[item.badge].cls}`}>
+                        {BADGE_MAP[item.badge].text}
+                      </span>
+                    )}
+                  </div>
+                  <div className="hs-wb-item-desc">{item.desc}</div>
+                  <div className="hs-wb-item-meta">{item.reads}阅读</div>
+                </div>
+                {item.portrait && (
+                  <img className="hs-wb-item-portrait" src={item.portrait} alt="" />
+                )}
+              </motion.div>
+            )
+          })}
+
+          {/* 加载指示 */}
           {!hotDone && hotIndex < HOT_ITEMS.length && (
-            <div style={{ textAlign: 'center', padding: 12, color: 'rgba(255,255,255,0.2)', fontSize: 12 }}>
-              加载更多...
+            <div style={{ textAlign: 'center', padding: 16, color: 'rgba(255,255,255,0.15)', fontSize: 12 }}>
+              加载中...
             </div>
           )}
         </div>
 
+        {/* CTA */}
         {hotDone && (
           <motion.div
-            className="hs-hot-actions"
+            className="hs-wb-cta-wrap"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
             <button
-              className="hs-phone-cta"
+              className="hs-wb-cta"
               onClick={() => setPhase('makeup')}
             >
               查看通告单
