@@ -41,7 +41,7 @@ const HOT_ITEMS = [
 // ── Opening Screen ──────────────────────────────────
 
 function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
-  const [phase, setPhase] = useState<'chat' | 'hotsearch' | 'makeup'>('chat')
+  const [phase, setPhase] = useState<'landing' | 'chat' | 'hotsearch' | 'makeup'>('landing')
   const [chatIndex, setChatIndex] = useState(0)
   const [chatDone, setChatDone] = useState(false)
   const [hotIndex, setHotIndex] = useState(0)
@@ -80,6 +80,53 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
     const timer = setTimeout(() => setHotIndex((i) => i + 1), delay)
     return () => clearTimeout(timer)
   }, [phase, hotIndex, hotDone])
+
+  // ── Phase 0: 首屏标题 ──
+  if (phase === 'landing') {
+    const stars = Array.from({ length: 30 }).map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      width: 1.5 + Math.random() * 2,
+      animationDelay: `${Math.random() * 3}s`,
+      animationDuration: `${2 + Math.random() * 3}s`,
+    }))
+    return (
+      <div className="hs-landing">
+        <div className="hs-landing-bg" />
+        <div className="hs-landing-stars">
+          {stars.map((s, i) => (
+            <div
+              key={i}
+              className="hs-landing-star"
+              style={{
+                left: s.left, top: s.top,
+                width: s.width, height: s.width,
+                animationDelay: s.animationDelay,
+                animationDuration: s.animationDuration,
+              }}
+            />
+          ))}
+        </div>
+        <div className="hs-landing-content">
+          <div className="hs-landing-logo">花儿与少年</div>
+          <div className="hs-landing-sub">星 光 之 旅</div>
+          <div className="hs-landing-actions">
+            <button
+              className="hs-phone-cta"
+              onClick={() => { initBGM(); setPhase('chat') }}
+            >
+              开始游戏
+            </button>
+            {hasSave() && (
+              <button className="hs-phone-secondary" onClick={handleContinue}>
+                继续游戏
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // ── Phase 1: 经纪人深夜消息 ──
   if (phase === 'chat') {
@@ -129,15 +176,10 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
           >
             <button
               className="hs-phone-cta"
-              onClick={() => { initBGM(); setPhase('hotsearch') }}
+              onClick={() => setPhase('hotsearch')}
             >
               查看嘉宾名单
             </button>
-            {hasSave() && (
-              <button className="hs-phone-secondary" onClick={handleContinue}>
-                继续录制
-              </button>
-            )}
           </motion.div>
         )}
       </div>

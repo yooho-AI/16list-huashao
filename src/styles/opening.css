@@ -1,9 +1,61 @@
 /**
  * [INPUT]: 依赖 globals.css CSS 变量
- * [OUTPUT]: 开场页全部样式——经纪人消息 + 热搜速览 + 化妆间通告单
- * [POS]: styles 的开场专用样式，女性向综艺沉浸式三幕
+ * [OUTPUT]: 开场页全部样式——首屏标题 + 经纪人消息 + 热搜速览 + 化妆间通告单
+ * [POS]: styles 的开场专用样式，首屏+女性向综艺沉浸式三幕
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
+
+/* ================================================================
+   Phase 0: 首屏标题 — 开始 / 继续
+   ================================================================ */
+.hs-landing {
+  position: fixed; inset: 0; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  background: #08080c;
+  padding: 0 24px env(safe-area-inset-bottom);
+}
+.hs-landing-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 20%, rgba(255,126,179,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 30% 70%, rgba(255,215,0,0.04) 0%, transparent 60%);
+}
+.hs-landing-stars {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.hs-landing-star {
+  position: absolute; border-radius: 50%;
+  background: white;
+  animation: hsStarTwinkle 3s ease-in-out infinite;
+}
+@keyframes hsStarTwinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 0.8; transform: scale(1.2); }
+}
+.hs-landing-content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  width: 100%; max-width: 340px;
+  padding-bottom: 60px;
+}
+.hs-landing-logo {
+  margin-bottom: 8px;
+  font-size: 28px; font-weight: 800; letter-spacing: 3px;
+  background: linear-gradient(135deg, #FF7EB3 0%, #FFD700 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 20px rgba(255,126,179,0.2));
+}
+.hs-landing-sub {
+  font-size: 12px; letter-spacing: 6px;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 48px;
+}
+.hs-landing-actions {
+  width: 100%;
+  display: flex; flex-direction: column; gap: 12px;
+}
 
 /* ================================================================
    Phase 1: 深夜消息 — 经纪人来电
