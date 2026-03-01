@@ -1,292 +1,312 @@
 /**
  * [INPUT]: 依赖 globals.css CSS 变量
- * [OUTPUT]: 开场页全部样式——登机牌Splash + 群像闪切 + 姓名输入
- * [POS]: styles 的开场专用样式，登机牌/航空票邀请主题
+ * [OUTPUT]: 开场页全部样式——经纪人消息 + 热搜速览 + 化妆间通告单
+ * [POS]: styles 的开场专用样式，女性向综艺沉浸式三幕
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
-/* ── Phase 1: Boarding Pass Splash ─────────────────── */
-.hs-boarding-pass {
+/* ================================================================
+   Phase 1: 深夜消息 — 经纪人来电
+   ================================================================ */
+.hs-phone {
   position: fixed; inset: 0; overflow: hidden;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
-  background: linear-gradient(-45deg, #0c0e1a, #111730, #0c0e1a, #151d3a);
-  background-size: 400% 400%;
-  animation: hsGradientShift 20s ease infinite;
-}
-@keyframes hsGradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  display: flex; flex-direction: column;
+  background: #08080c;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
 }
 
-/* Star particle field */
-.hs-boarding-pass-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.hs-star { position: absolute; border-radius: 50%; animation: hsStarFloat linear infinite; }
-.hs-star-0 { background: radial-gradient(circle, #FFD700 0%, transparent 70%); }
-.hs-star-1 { background: radial-gradient(circle, #FF7EB3 0%, transparent 70%); }
-.hs-star-2 { background: radial-gradient(circle, #ffffff 0%, transparent 70%); }
-.hs-star-3 { background: radial-gradient(circle, #87CEEB 0%, transparent 70%); }
-@keyframes hsStarFloat {
-  0% { opacity: 0; transform: translateY(0) scale(0.4); }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-120px) scale(1); }
+/* 顶部状态栏模拟 */
+.hs-phone-status {
+  display: flex; justify-content: center; align-items: center;
+  padding: 12px 20px 8px; gap: 6px;
+  color: rgba(255,255,255,0.3); font-size: 11px;
+}
+.hs-phone-time { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* 聊天区域 */
+.hs-phone-chat {
+  flex: 1; overflow-y: auto; padding: 16px 16px 24px;
+  display: flex; flex-direction: column; gap: 8px;
 }
 
-/* Boarding pass card */
-.hs-pass-card {
-  position: relative; z-index: 2;
-  width: 340px; max-width: calc(100vw - 48px);
-  background: linear-gradient(165deg, rgba(20, 25, 50, 0.95), rgba(12, 14, 26, 0.98));
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 16px; padding: 28px 24px 24px;
-  box-shadow: 0 0 40px rgba(255,126,179,0.08), 0 8px 32px rgba(0,0,0,0.6),
-              inset 0 1px 0 rgba(255,215,0,0.1);
-  animation: hsShimmer 4s ease-in-out infinite;
+/* 发送者头部 */
+.hs-chat-sender {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 4px; padding-left: 4px;
 }
-@keyframes hsShimmer {
-  0%, 100% {
-    box-shadow: 0 0 40px rgba(255,126,179,0.08), 0 8px 32px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255,215,0,0.1);
-  }
-  50% {
-    box-shadow: 0 0 60px rgba(255,215,0,0.12), 0 8px 32px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255,215,0,0.25);
-  }
-}
-
-/* Perforation dashes on left/right edges */
-.hs-pass-card::before,
-.hs-pass-card::after {
-  content: ''; position: absolute; top: 40px; bottom: 40px; width: 1px;
-  background: repeating-linear-gradient(to bottom,
-    rgba(255,215,0,0.3) 0px, rgba(255,215,0,0.3) 6px,
-    transparent 6px, transparent 12px);
-  animation: hsPerforation 2s linear infinite;
-}
-.hs-pass-card::before { left: 10px; }
-.hs-pass-card::after { right: 10px; }
-@keyframes hsPerforation {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 12px; }
-}
-
-/* BOARDING PASS header */
-.hs-pass-header {
-  font-size: 11px; letter-spacing: 6px; font-weight: 600;
-  text-align: center; color: #FFD700;
-  text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-  margin-bottom: 4px;
-}
-/* Airline name */
-.hs-pass-airline {
-  font-size: 28px; font-weight: 800; color: white;
-  text-align: center; letter-spacing: 4px; margin-bottom: 4px;
-  text-shadow: 0 0 30px rgba(255, 126, 179, 0.4);
-}
-/* Subtitle */
-.hs-pass-subtitle {
-  font-size: 12px; color: rgba(255,255,255,0.4);
-  text-align: center; letter-spacing: 3px; margin-bottom: 20px;
-}
-/* Gold divider */
-.hs-pass-divider {
-  width: 100%; height: 1px; margin-bottom: 20px;
-  background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
-}
-
-/* Flight route: FROM → TO */
-.hs-pass-route {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px; padding: 0 8px;
-}
-.hs-pass-point { text-align: center; flex: 1; }
-.hs-pass-label {
-  font-size: 10px; color: rgba(255,215,0,0.6);
-  letter-spacing: 2px; margin-bottom: 4px;
-}
-.hs-pass-value {
-  font-size: 18px; font-weight: 700;
-  color: white; letter-spacing: 2px;
-}
-.hs-pass-arrow {
-  flex: 0 0 auto; padding: 0 12px;
-  color: #FF7EB3; font-size: 20px;
-  animation: hsTypewriter 1.5s steps(1) infinite;
-}
-@keyframes hsTypewriter {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-/* Flight info row (GATE / DATE / SEAT) */
-.hs-pass-info {
-  display: flex; justify-content: space-between;
-  padding: 0 8px; margin-bottom: 20px;
-}
-.hs-pass-info-item { text-align: center; }
-.hs-pass-info-label {
-  font-size: 9px; color: rgba(255,255,255,0.35);
-  letter-spacing: 2px; margin-bottom: 2px;
-}
-.hs-pass-info-value {
-  font-size: 13px; font-weight: 600;
-  color: rgba(255,255,255,0.8);
-}
-
-/* Barcode decoration */
-.hs-pass-barcode {
-  display: flex; align-items: flex-end; justify-content: center;
-  gap: 2px; height: 32px; margin-bottom: 20px; opacity: 0.25;
-}
-.hs-pass-bar { width: 2px; background: #FFD700; border-radius: 1px; }
-
-/* CTA: 登机 button */
-.hs-pass-cta {
-  position: relative; z-index: 2;
-  display: block; width: 340px; max-width: calc(100vw - 48px); padding: 14px;
-  border: none; border-radius: 50px;
+.hs-chat-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
   background: linear-gradient(135deg, #FF7EB3, #FFD700);
-  color: #0c0e1a; font-size: 15px; font-weight: 700;
-  letter-spacing: 4px; cursor: pointer;
-  box-shadow: 0 0 20px rgba(255,126,179,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.hs-chat-name {
+  font-size: 12px; color: rgba(255,255,255,0.4);
+}
+
+/* 消息气泡 */
+.hs-chat-bubble {
+  max-width: 80%; padding: 10px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px 16px 16px 16px;
+  font-size: 15px; line-height: 1.6;
+  color: rgba(255,255,255,0.9);
+  animation: hsBubbleIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hs-chat-bubble-warning {
+  background: rgba(255,180,0,0.08);
+  border-color: rgba(255,180,0,0.15);
+  color: #FFD080;
+}
+@keyframes hsBubbleIn {
+  0% { opacity: 0; transform: translateY(12px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 打字中指示器 */
+.hs-chat-typing {
+  display: flex; gap: 4px; padding: 10px 14px;
+  max-width: 60px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 4px 16px 16px 16px;
+}
+.hs-chat-typing-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  animation: hsTypingBounce 1.2s ease-in-out infinite;
+}
+.hs-chat-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.hs-chat-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes hsTypingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* 底部按钮区 */
+.hs-phone-actions {
+  padding: 16px 20px 24px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.hs-phone-cta {
+  width: 100%; padding: 14px;
+  border: none; border-radius: 50px;
+  background: linear-gradient(135deg, #FF7EB3, #FF5C8A);
+  color: white; font-size: 15px; font-weight: 600;
+  letter-spacing: 2px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255,126,179,0.3);
   animation: hsPulseGlow 2.5s ease-in-out infinite;
 }
 @keyframes hsPulseGlow {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,126,179,0.3); }
-  50% { transform: scale(1.04); box-shadow: 0 0 36px rgba(255,126,179,0.5), 0 0 60px rgba(255,215,0,0.15); }
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 20px rgba(255,126,179,0.3); }
+  50% { transform: scale(1.02); box-shadow: 0 4px 30px rgba(255,126,179,0.5); }
 }
-.hs-pass-cta:active { transform: scale(0.97) !important; animation: none; }
-
-/* ── Phase 2: Cast Montage ─────────────────────────── */
-.hs-montage {
-  position: fixed; inset: 0;
-  overflow: hidden; background: #0c0e1a;
-}
-
-.hs-montage-portrait {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-}
-.hs-montage-portrait img {
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: center top;
+.hs-phone-cta:active { transform: scale(0.97) !important; animation: none; }
+.hs-phone-secondary {
+  width: 100%; padding: 12px;
+  border-radius: 50px; background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  font-size: 14px; cursor: pointer;
 }
 
-/* Alternating slide directions */
-.hs-slide-left  { animation: hsSlideLeft  0.6s ease-out forwards; }
-.hs-slide-right { animation: hsSlideRight 0.6s ease-out forwards; }
-@keyframes hsSlideLeft {
-  0% { opacity: 0; transform: translateX(-60px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-@keyframes hsSlideRight {
-  0% { opacity: 0; transform: translateX(60px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-
-/* Bottom gradient overlay for text */
-.hs-montage-overlay {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 60px 24px 40px;
-  background: linear-gradient(transparent 0%, rgba(12,14,26,0.85) 100%);
-  color: white; text-align: center;
-}
-.hs-montage-name {
-  font-size: 28px; font-weight: 700;
-  letter-spacing: 3px; margin-bottom: 6px;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
-}
-.hs-montage-title {
-  font-size: 14px; color: rgba(255,215,0,0.7);
-  letter-spacing: 2px;
-}
-
-.hs-montage-skip {
-  position: absolute; top: 16px; right: 16px; z-index: 10;
-  background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.7);
-  padding: 6px 16px; border-radius: 20px;
-  font-size: 13px; cursor: pointer;
-}
-
-.hs-montage-dots {
-  position: absolute; bottom: 14px; left: 50%;
-  transform: translateX(-50%); display: flex; gap: 6px;
-}
-.hs-montage-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(255,255,255,0.25); transition: all 0.3s;
-}
-.hs-montage-dot-active {
-  background: #FFD700; width: 18px; border-radius: 3px;
-}
-
-/* Fallback empty state */
-.hs-montage-empty {
-  position: absolute; inset: 0;
+/* ================================================================
+   Phase 2: 热搜速览 — 社交媒体信息流
+   ================================================================ */
+.hs-hotsearch {
+  position: fixed; inset: 0; overflow: hidden;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #0c0e1a, #111730);
-  color: white;
-}
-.hs-montage-empty-text { font-size: 20px; font-weight: 600; margin-top: 16px; }
-.hs-montage-empty-sub { font-size: 14px; opacity: 0.5; margin-top: 8px; }
-
-/* ── Phase 3: Name Input ──────────────────────────── */
-.hs-name-input {
-  position: fixed; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(180deg, #0c0e1a 0%, #111730 50%, #0c0e1a 100%);
-  padding: 24px; overflow: hidden;
+  background: #08080c;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
 }
 
-.hs-name-input-particles { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+/* 顶部搜索栏模拟 */
+.hs-hot-header {
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.hs-hot-search-bar {
+  flex: 1; padding: 8px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 20px; border: none;
+  color: rgba(255,255,255,0.3); font-size: 13px;
+}
+.hs-hot-label {
+  font-size: 13px; font-weight: 600;
+  color: #FF5C5C;
+}
 
-.hs-name-input-inner {
+/* 信息流 */
+.hs-hot-feed {
+  flex: 1; overflow-y: auto; padding: 8px 16px 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+/* 热搜卡片 */
+.hs-hot-card {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 14px;
+  animation: hsCardSlideUp 0.5s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+@keyframes hsCardSlideUp {
+  0% { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.hs-hot-card-portrait {
+  width: 48px; height: 48px; border-radius: 50%;
+  object-fit: cover; object-position: center top;
+  flex-shrink: 0; border: 2px solid rgba(255,255,255,0.06);
+}
+.hs-hot-card-body { flex: 1; min-width: 0; }
+.hs-hot-card-tag {
+  font-size: 14px; font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 4px;
+}
+.hs-hot-card-tag .hs-fire { color: #FF5C5C; margin-right: 4px; }
+.hs-hot-card-text {
+  font-size: 13px; line-height: 1.5;
+  color: rgba(255,255,255,0.45);
+}
+.hs-hot-card-meta {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 6px; font-size: 11px; color: rgba(255,255,255,0.2);
+}
+.hs-hot-badge {
+  padding: 1px 6px; border-radius: 3px;
+  background: rgba(255,92,92,0.12); color: #FF5C5C;
+  font-size: 10px; font-weight: 600;
+}
+
+/* 最后一张 — 关于玩家 */
+.hs-hot-card-player {
+  border-color: rgba(255,126,179,0.2);
+  background: rgba(255,126,179,0.04);
+}
+.hs-hot-card-player .hs-hot-card-tag { color: #FF7EB3; }
+
+/* 底部CTA */
+.hs-hot-actions {
+  padding: 16px 20px 24px;
+}
+
+/* ================================================================
+   Phase 3: 化妆间 — 通告单 + 名牌
+   ================================================================ */
+.hs-makeup {
+  position: fixed; inset: 0; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(170deg, #1a140e 0%, #0f0c08 40%, #1a140e 100%);
+  padding: 24px;
+}
+
+/* 镜前灯泡装饰 */
+.hs-makeup-bulbs {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: flex; justify-content: center; gap: 28px;
+  padding: 40px 20px 0; pointer-events: none;
+}
+.hs-makeup-bulb {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #FFE4B5;
+  box-shadow: 0 0 12px 4px rgba(255,228,181,0.25);
+  animation: hsBulbGlow 3s ease-in-out infinite;
+}
+.hs-makeup-bulb:nth-child(odd) { animation-delay: 1.5s; }
+@keyframes hsBulbGlow {
+  0%, 100% { opacity: 0.5; box-shadow: 0 0 12px 4px rgba(255,228,181,0.15); }
+  50% { opacity: 1; box-shadow: 0 0 20px 8px rgba(255,228,181,0.35); }
+}
+
+/* 暖光粒子 */
+.hs-makeup-particles {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+.hs-makeup-spark {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,228,181,0.6) 0%, transparent 70%);
+  animation: hsSparkFloat linear infinite;
+}
+@keyframes hsSparkFloat {
+  0% { opacity: 0; transform: translateY(0) scale(0.3); }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-80px) scale(0.8); }
+}
+
+/* 通告单卡片 */
+.hs-notice-card {
   position: relative; z-index: 1;
-  max-width: 340px; width: 100%; text-align: center;
-}
-.hs-name-input-prompt {
-  font-size: 13px; letter-spacing: 4px;
-  color: rgba(255,215,0,0.6); margin-bottom: 8px;
-}
-.hs-name-input-heading {
-  font-size: 22px; font-weight: 700; color: white;
-  letter-spacing: 3px; margin-bottom: 32px;
+  width: 340px; max-width: calc(100vw - 48px);
+  background: linear-gradient(165deg, rgba(30, 24, 16, 0.95), rgba(20, 16, 10, 0.98));
+  border: 1px solid rgba(255,228,181,0.15);
+  border-radius: 16px; padding: 28px 24px 24px;
+  box-shadow: 0 0 40px rgba(255,228,181,0.06), 0 8px 32px rgba(0,0,0,0.5);
 }
 
-.hs-name-input-field {
-  width: 100%; padding: 12px 4px;
+.hs-notice-header {
+  text-align: center; margin-bottom: 20px;
+}
+.hs-notice-title {
+  font-size: 16px; font-weight: 700; letter-spacing: 2px;
+  color: #FFE4B5;
+  text-shadow: 0 0 12px rgba(255,228,181,0.3);
+}
+.hs-notice-subtitle {
+  font-size: 11px; letter-spacing: 4px;
+  color: rgba(255,228,181,0.4); margin-top: 4px;
+}
+.hs-notice-divider {
+  height: 1px; margin: 16px 0;
+  background: linear-gradient(90deg, transparent, rgba(255,228,181,0.2), transparent);
+}
+
+/* 通告单字段 */
+.hs-notice-field {
+  margin-bottom: 16px;
+}
+.hs-notice-label {
+  font-size: 10px; letter-spacing: 3px; font-weight: 600;
+  color: rgba(255,228,181,0.4); margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.hs-notice-value {
+  font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.5;
+}
+.hs-notice-input {
+  width: 100%; padding: 10px 0;
   background: transparent; border: none;
-  border-bottom: 2px solid rgba(255,215,0,0.3);
-  color: white; font-size: 20px;
-  text-align: center; letter-spacing: 2px;
-  outline: none; margin-bottom: 32px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  border-bottom: 1.5px solid rgba(255,228,181,0.2);
+  color: #FFE4B5; font-size: 18px; font-weight: 600;
+  letter-spacing: 2px; outline: none;
+  transition: border-color 0.3s;
 }
-.hs-name-input-field::placeholder { color: rgba(255,255,255,0.2); font-size: 16px; }
-.hs-name-input-field:focus { border-color: #FFD700; box-shadow: 0 4px 16px rgba(255,215,0,0.15); }
+.hs-notice-input::placeholder { color: rgba(255,228,181,0.2); font-size: 14px; font-weight: 400; }
+.hs-notice-input:focus { border-color: rgba(255,228,181,0.5); }
 
-.hs-name-input-btn {
-  width: 100%; padding: 14px;
+.hs-notice-warn {
+  display: flex; gap: 6px; align-items: flex-start;
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(255,180,0,0.06);
+  border: 1px solid rgba(255,180,0,0.1);
+  font-size: 12px; line-height: 1.5;
+  color: rgba(255,200,100,0.6);
+  margin-top: 16px;
+}
+
+/* CTA */
+.hs-notice-cta {
+  width: 100%; padding: 14px; margin-top: 20px;
   border: none; border-radius: 50px;
-  background: linear-gradient(135deg, #FF7EB3, #FFD700);
-  color: #0c0e1a; font-size: 15px; font-weight: 700;
+  background: linear-gradient(135deg, #FFE4B5, #FFC67D);
+  color: #1a140e; font-size: 15px; font-weight: 700;
   letter-spacing: 3px; cursor: pointer;
-  box-shadow: 0 0 20px rgba(255,126,179,0.3);
+  box-shadow: 0 4px 20px rgba(255,228,181,0.2);
   transition: transform 0.15s;
 }
-.hs-name-input-btn:active { transform: scale(0.97); }
-.hs-name-input-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-.hs-name-input-btn-secondary {
-  position: relative; z-index: 2;
-  width: 340px; max-width: calc(100vw - 48px); padding: 12px;
-  border-radius: 50px; background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.5);
-  font-size: 14px; cursor: pointer; margin-top: 10px;
-}
+.hs-notice-cta:active { transform: scale(0.97); }
+.hs-notice-cta:disabled { opacity: 0.3; cursor: not-allowed; }

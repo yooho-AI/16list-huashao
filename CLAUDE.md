@@ -14,7 +14,7 @@ React 19 + Zustand 5 + Immer + Vite 7 + Tailwind CSS v4 + Framer Motion + Cloudf
 ├── src/
 │   ├── main.tsx                 - ☆ React 入口
 │   ├── vite-env.d.ts            - Vite 类型声明
-│   ├── App.tsx                  - 根组件: 三阶段开场(登机牌→嘉宾闪切→艺名输入) + GameScreen + EndingModal + MenuOverlay
+│   ├── App.tsx                  - 根组件: 三幕开场(经纪人消息→热搜速览→化妆间通告单) + GameScreen + EndingModal + MenuOverlay
 │   ├── lib/
 │   │   ├── script.md            - ★ 剧本直通：五模块原文（零转换注入 prompt）
 │   │   ├── data.ts              - ★ UI 薄层：类型(含富消息扩展) + 6角色 + 6场景 + 6道具 + 3章节 + 7事件 + 7结局
@@ -26,7 +26,7 @@ React 19 + Zustand 5 + Immer + Vite 7 + Tailwind CSS v4 + Framer Motion + Cloudf
 │   │   └── hooks.ts             - ☆ useMediaQuery / useIsMobile
 │   ├── styles/
 │   │   ├── globals.css          - 全局基础样式（hs- 前缀，深蓝星夜主题变量）
-│   │   ├── opening.css          - 开场样式：登机牌 + 群像闪切 + 姓名输入
+│   │   ├── opening.css          - 开场样式：经纪人消息 + 热搜速览 + 化妆间通告单
 │   │   └── rich-cards.css       - 富UI组件：场景卡 + 日变卡 + 档案卡 + NPC气泡 + DashboardDrawer + RecordSheet + SVG关系图 + Toast
 │   └── components/game/
 │       ├── app-shell.tsx        - 桌面居中壳 + Header(📓+🎵+☰+📜) + 三向手势 + Tab路由 + TabBar + DashboardDrawer + RecordSheet + Toast
@@ -56,8 +56,9 @@ React 19 + Zustand 5 + Immer + Vite 7 + Tailwind CSS v4 + Framer Motion + Cloudf
 
 | 组件 | 位置 | 触发 | 视觉风格 |
 |------|------|------|----------|
-| BoardingPass | App.tsx | 开场Phase1 | 航空登机牌+深蓝渐变+星光粒子+shimmer+barcode+脉冲CTA |
-| CastMontage | App.tsx | 开场Phase2 | 6角色立绘顺序闪现(2s/人)，交替左右滑入+进度圆点 |
+| AgentChat | App.tsx | 开场Phase1 | 深夜手机界面+经纪人消息气泡逐条出现+打字指示器+粉色CTA |
+| HotSearch | App.tsx | 开场Phase2 | 热搜信息流+6嘉宾头像卡片逐条滑入+火标签+玩家专属高亮卡 |
+| MakeupNotice | App.tsx | 开场Phase3 | 暖光化妆间+镜前灯泡+通告单卡片+艺名输入+暖金CTA |
 | DashboardDrawer | dashboard-drawer | Header📓+右滑手势 | 毛玻璃左抽屉：扉页+人气+角色轮播+场景缩略图+旅行目标+道具+播放器。Reorder拖拽 |
 | RecordSheet | app-shell | Header📜+左滑手势 | 右侧滑入事件记录：时间线倒序+粉色圆点 |
 | SceneTransitionCard | tab-dialogue | selectScene | 场景背景+Ken Burns(8s)+渐变遮罩 |
