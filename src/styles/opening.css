@@ -1,0 +1,290 @@
+/**
+ * [INPUT]: 依赖 globals.css CSS 变量
+ * [OUTPUT]: 开场页全部样式——登机牌Splash + 群像闪切 + 姓名输入
+ * [POS]: styles 的开场专用样式，登机牌/航空票邀请主题
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+
+/* ── Phase 1: Boarding Pass Splash ─────────────────── */
+.hs-boarding-pass {
+  position: relative; width: 100%; height: 100dvh; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(-45deg, #0c0e1a, #111730, #0c0e1a, #151d3a);
+  background-size: 400% 400%;
+  animation: hsGradientShift 20s ease infinite;
+}
+@keyframes hsGradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Star particle field */
+.hs-boarding-pass-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.hs-star { position: absolute; border-radius: 50%; animation: hsStarFloat linear infinite; }
+.hs-star-0 { background: radial-gradient(circle, #FFD700 0%, transparent 70%); }
+.hs-star-1 { background: radial-gradient(circle, #FF7EB3 0%, transparent 70%); }
+.hs-star-2 { background: radial-gradient(circle, #ffffff 0%, transparent 70%); }
+.hs-star-3 { background: radial-gradient(circle, #87CEEB 0%, transparent 70%); }
+@keyframes hsStarFloat {
+  0% { opacity: 0; transform: translateY(0) scale(0.4); }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-120px) scale(1); }
+}
+
+/* Boarding pass card */
+.hs-pass-card {
+  position: relative; z-index: 2;
+  width: 340px; max-width: calc(100vw - 48px);
+  background: linear-gradient(165deg, rgba(20, 25, 50, 0.95), rgba(12, 14, 26, 0.98));
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 16px; padding: 28px 24px 24px;
+  box-shadow: 0 0 40px rgba(255,126,179,0.08), 0 8px 32px rgba(0,0,0,0.6),
+              inset 0 1px 0 rgba(255,215,0,0.1);
+  animation: hsShimmer 4s ease-in-out infinite;
+}
+@keyframes hsShimmer {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(255,126,179,0.08), 0 8px 32px rgba(0,0,0,0.6),
+                inset 0 1px 0 rgba(255,215,0,0.1);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(255,215,0,0.12), 0 8px 32px rgba(0,0,0,0.6),
+                inset 0 1px 0 rgba(255,215,0,0.25);
+  }
+}
+
+/* Perforation dashes on left/right edges */
+.hs-pass-card::before,
+.hs-pass-card::after {
+  content: ''; position: absolute; top: 40px; bottom: 40px; width: 1px;
+  background: repeating-linear-gradient(to bottom,
+    rgba(255,215,0,0.3) 0px, rgba(255,215,0,0.3) 6px,
+    transparent 6px, transparent 12px);
+  animation: hsPerforation 2s linear infinite;
+}
+.hs-pass-card::before { left: 10px; }
+.hs-pass-card::after { right: 10px; }
+@keyframes hsPerforation {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 12px; }
+}
+
+/* BOARDING PASS header */
+.hs-pass-header {
+  font-size: 11px; letter-spacing: 6px; font-weight: 600;
+  text-align: center; color: #FFD700;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+  margin-bottom: 4px;
+}
+/* Airline name */
+.hs-pass-airline {
+  font-size: 28px; font-weight: 800; color: white;
+  text-align: center; letter-spacing: 4px; margin-bottom: 4px;
+  text-shadow: 0 0 30px rgba(255, 126, 179, 0.4);
+}
+/* Subtitle */
+.hs-pass-subtitle {
+  font-size: 12px; color: rgba(255,255,255,0.4);
+  text-align: center; letter-spacing: 3px; margin-bottom: 20px;
+}
+/* Gold divider */
+.hs-pass-divider {
+  width: 100%; height: 1px; margin-bottom: 20px;
+  background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+}
+
+/* Flight route: FROM → TO */
+.hs-pass-route {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px; padding: 0 8px;
+}
+.hs-pass-point { text-align: center; flex: 1; }
+.hs-pass-label {
+  font-size: 10px; color: rgba(255,215,0,0.6);
+  letter-spacing: 2px; margin-bottom: 4px;
+}
+.hs-pass-value {
+  font-size: 18px; font-weight: 700;
+  color: white; letter-spacing: 2px;
+}
+.hs-pass-arrow {
+  flex: 0 0 auto; padding: 0 12px;
+  color: #FF7EB3; font-size: 20px;
+  animation: hsTypewriter 1.5s steps(1) infinite;
+}
+@keyframes hsTypewriter {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Flight info row (GATE / DATE / SEAT) */
+.hs-pass-info {
+  display: flex; justify-content: space-between;
+  padding: 0 8px; margin-bottom: 20px;
+}
+.hs-pass-info-item { text-align: center; }
+.hs-pass-info-label {
+  font-size: 9px; color: rgba(255,255,255,0.35);
+  letter-spacing: 2px; margin-bottom: 2px;
+}
+.hs-pass-info-value {
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.8);
+}
+
+/* Barcode decoration */
+.hs-pass-barcode {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 2px; height: 32px; margin-bottom: 20px; opacity: 0.25;
+}
+.hs-pass-bar { width: 2px; background: #FFD700; border-radius: 1px; }
+
+/* CTA: 登机 button */
+.hs-pass-cta {
+  display: block; width: 100%; padding: 14px;
+  border: none; border-radius: 50px;
+  background: linear-gradient(135deg, #FF7EB3, #FFD700);
+  color: #0c0e1a; font-size: 15px; font-weight: 700;
+  letter-spacing: 4px; cursor: pointer;
+  box-shadow: 0 0 20px rgba(255,126,179,0.3);
+  animation: hsPulseGlow 2.5s ease-in-out infinite;
+}
+@keyframes hsPulseGlow {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,126,179,0.3); }
+  50% { transform: scale(1.04); box-shadow: 0 0 36px rgba(255,126,179,0.5), 0 0 60px rgba(255,215,0,0.15); }
+}
+.hs-pass-cta:active { transform: scale(0.97) !important; animation: none; }
+
+/* ── Phase 2: Cast Montage ─────────────────────────── */
+.hs-montage {
+  position: relative; width: 100%; height: 100dvh;
+  overflow: hidden; background: #0c0e1a;
+}
+
+.hs-montage-portrait {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.hs-montage-portrait img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+}
+
+/* Alternating slide directions */
+.hs-slide-left  { animation: hsSlideLeft  0.6s ease-out forwards; }
+.hs-slide-right { animation: hsSlideRight 0.6s ease-out forwards; }
+@keyframes hsSlideLeft {
+  0% { opacity: 0; transform: translateX(-60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes hsSlideRight {
+  0% { opacity: 0; transform: translateX(60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Bottom gradient overlay for text */
+.hs-montage-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 60px 24px 40px;
+  background: linear-gradient(transparent 0%, rgba(12,14,26,0.85) 100%);
+  color: white; text-align: center;
+}
+.hs-montage-name {
+  font-size: 28px; font-weight: 700;
+  letter-spacing: 3px; margin-bottom: 6px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+}
+.hs-montage-title {
+  font-size: 14px; color: rgba(255,215,0,0.7);
+  letter-spacing: 2px;
+}
+
+.hs-montage-skip {
+  position: absolute; top: 16px; right: 16px; z-index: 10;
+  background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.7);
+  padding: 6px 16px; border-radius: 20px;
+  font-size: 13px; cursor: pointer;
+}
+
+.hs-montage-dots {
+  position: absolute; bottom: 14px; left: 50%;
+  transform: translateX(-50%); display: flex; gap: 6px;
+}
+.hs-montage-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.25); transition: all 0.3s;
+}
+.hs-montage-dot-active {
+  background: #FFD700; width: 18px; border-radius: 3px;
+}
+
+/* Fallback empty state */
+.hs-montage-empty {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0c0e1a, #111730);
+  color: white;
+}
+.hs-montage-empty-text { font-size: 20px; font-weight: 600; margin-top: 16px; }
+.hs-montage-empty-sub { font-size: 14px; opacity: 0.5; margin-top: 8px; }
+
+/* ── Phase 3: Name Input ──────────────────────────── */
+.hs-name-input {
+  position: relative; width: 100%; min-height: 100dvh;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #0c0e1a 0%, #111730 50%, #0c0e1a 100%);
+  padding: 24px; overflow: hidden;
+}
+
+.hs-name-input-particles { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+.hs-name-input-inner {
+  position: relative; z-index: 1;
+  max-width: 340px; width: 100%; text-align: center;
+}
+.hs-name-input-prompt {
+  font-size: 13px; letter-spacing: 4px;
+  color: rgba(255,215,0,0.6); margin-bottom: 8px;
+}
+.hs-name-input-heading {
+  font-size: 22px; font-weight: 700; color: white;
+  letter-spacing: 3px; margin-bottom: 32px;
+}
+
+.hs-name-input-field {
+  width: 100%; padding: 12px 4px;
+  background: transparent; border: none;
+  border-bottom: 2px solid rgba(255,215,0,0.3);
+  color: white; font-size: 20px;
+  text-align: center; letter-spacing: 2px;
+  outline: none; margin-bottom: 32px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.hs-name-input-field::placeholder { color: rgba(255,255,255,0.2); font-size: 16px; }
+.hs-name-input-field:focus { border-color: #FFD700; box-shadow: 0 4px 16px rgba(255,215,0,0.15); }
+
+.hs-name-input-btn {
+  width: 100%; padding: 14px;
+  border: none; border-radius: 50px;
+  background: linear-gradient(135deg, #FF7EB3, #FFD700);
+  color: #0c0e1a; font-size: 15px; font-weight: 700;
+  letter-spacing: 3px; cursor: pointer;
+  box-shadow: 0 0 20px rgba(255,126,179,0.3);
+  transition: transform 0.15s;
+}
+.hs-name-input-btn:active { transform: scale(0.97); }
+.hs-name-input-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.hs-name-input-btn-secondary {
+  width: 100%; padding: 12px;
+  border-radius: 50px; background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+  font-size: 14px; cursor: pointer; margin-top: 10px;
+}
