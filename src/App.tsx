@@ -102,6 +102,13 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
     }))
     return (
       <div className="hs-landing">
+        <video
+          className="hs-landing-video"
+          src="/video/landing.mp4"
+          autoPlay muted loop playsInline
+          poster="/video/landing-poster.jpg"
+        />
+        <div className="hs-landing-overlay" />
         <div className="hs-landing-bg" />
         <div className="hs-landing-stars">
           {stars.map((s, i) => (
