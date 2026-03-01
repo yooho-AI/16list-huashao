@@ -115,7 +115,7 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
           <div className="hs-landing-actions">
             <button
               className="hs-landing-start"
-              onClick={() => { window.open('https://yooho.ai/login', '_blank') }}
+              onClick={() => { initBGM(); setPhase('chat') }}
             >
               开始游戏
             </button>
