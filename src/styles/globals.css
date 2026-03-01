@@ -595,6 +595,7 @@ body {
 
 .char-name {
   font-weight: 600;
+  color: var(--primary);
 }
 
 /* NPC 气泡内 Markdown 样式 */

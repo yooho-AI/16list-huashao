@@ -58,10 +58,10 @@ function colorizeStats(line: string): string {
   }
 
   // 角色名着色
-  for (const [name, color] of Object.entries(CHARACTER_COLORS)) {
+  for (const [name] of Object.entries(CHARACTER_COLORS)) {
     html = html.replaceAll(
       name,
-      `<span class="char-name" style="color:${color};font-weight:600">${name}</span>`,
+      `<span class="char-name">${name}</span>`,
     )
   }
 
@@ -80,10 +80,10 @@ function colorizeStats(line: string): string {
 
 function colorizeCharNames(html: string): string {
   let result = html
-  for (const [name, color] of Object.entries(CHARACTER_COLORS)) {
+  for (const [name] of Object.entries(CHARACTER_COLORS)) {
     result = result.replaceAll(
       name,
-      `<span class="char-name" style="color:${color};font-weight:600">${name}</span>`,
+      `<span class="char-name">${name}</span>`,
     )
   }
   return result
