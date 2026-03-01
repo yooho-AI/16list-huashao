@@ -265,7 +265,7 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
 
           {/* 加载指示 */}
           {!hotDone && hotIndex < HOT_ITEMS.length && (
-            <div style={{ textAlign: 'center', padding: 16, color: 'rgba(255,255,255,0.15)', fontSize: 12 }}>
+            <div style={{ textAlign: 'center', padding: 16, color: 'var(--text-muted)', fontSize: 12 }}>
               加载中...
             </div>
           )}

@@ -1,8 +1,8 @@
 /* ================================================================
  * 花儿与少年：星光之旅 — globals.css
- * 暗色星光夜主题（旅行综艺，温暖珊瑚粉 + 星光金）
+ * 浅粉主题（旅行综艺，珊瑚粉 + 星光金，浅色底）
  * CSS 前缀: hs-
- * 主题色: #FF7EB3（珊瑚粉）/ #FFD700（星光金）
+ * 主题色: #FF7EB3（珊瑚粉）/ #E8946A（暖金）
  * ================================================================ */
 
 @import 'tailwindcss';
@@ -10,24 +10,24 @@
 /* ── CSS 变量 ──────────────────────────────────────── */
 @layer base {
   :root {
-    --primary: #FF7EB3;
-    --primary-dim: #FF7EB320;
-    --primary-rgb: 255, 126, 179;
-    --star-gold: #FFD700;
-    --star-gold-rgb: 255, 215, 0;
-    --bg-base: #0c0e1a;
-    --bg-card: #151928;
-    --bg-input: #1a2035;
-    --bg-dash: #0f1322;
-    --bg-hover: rgba(255, 126, 179, 0.08);
-    --bg-active: rgba(255, 126, 179, 0.14);
-    --text-primary: #f0f0f5;
-    --text-secondary: #a0a5b8;
-    --text-muted: #5a6080;
-    --border: #2a3050;
-    --border-glow: rgba(255, 126, 179, 0.25);
-    --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-    --shadow-glow: 0 4px 20px rgba(255, 126, 179, 0.12);
+    --primary: #E8457C;
+    --primary-dim: rgba(232, 69, 124, 0.08);
+    --primary-rgb: 232, 69, 124;
+    --star-gold: #C0604A;
+    --star-gold-rgb: 192, 96, 74;
+    --bg-base: #FFF5F7;
+    --bg-card: #FFFFFF;
+    --bg-input: #FFF0F3;
+    --bg-dash: #FFF8FA;
+    --bg-hover: rgba(232, 69, 124, 0.05);
+    --bg-active: rgba(232, 69, 124, 0.1);
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b6b80;
+    --text-muted: #a0a0b0;
+    --border: rgba(0, 0, 0, 0.06);
+    --border-glow: rgba(232, 69, 124, 0.2);
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    --shadow-glow: 0 2px 16px rgba(232, 69, 124, 0.08);
     --font: 'system-ui', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   }
 }
@@ -118,9 +118,9 @@ body {
     margin: 0 auto;
     border-radius: 20px;
     box-shadow:
-      0 0 60px rgba(255, 126, 179, 0.1),
-      0 0 120px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.03);
+      0 0 60px rgba(232, 69, 124, 0.06),
+      0 0 120px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(0, 0, 0, 0.04);
     border: 1px solid var(--border);
     overflow: hidden;
   }
@@ -147,11 +147,11 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: linear-gradient(180deg, rgba(12, 14, 26, 0.94), rgba(12, 14, 26, 0.85));
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 126, 179, 0.12);
-  box-shadow: 0 1px 0 rgba(255, 126, 179, 0.04);
+  border-bottom: 1px solid rgba(232, 69, 124, 0.08);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
   flex-shrink: 0;
   z-index: 10;
   position: sticky;
@@ -241,11 +241,11 @@ body {
   justify-content: space-around;
   align-items: center;
   height: 56px;
-  background: rgba(12, 14, 26, 0.96);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(255, 126, 179, 0.12);
-  box-shadow: 0 -1px 0 rgba(255, 126, 179, 0.04);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.03);
   padding-bottom: env(safe-area-inset-bottom);
   flex-shrink: 0;
   z-index: 10;
@@ -312,14 +312,14 @@ body {
   align-self: flex-start;
   max-width: 85%;
   padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(21, 25, 40, 0.85), rgba(26, 32, 53, 0.75));
+  background: #FFFFFF;
   border-left: 3px solid var(--primary);
   border-radius: 2px 16px 16px 16px;
   margin-bottom: 8px;
   font-size: 14px;
   line-height: 1.8;
   color: var(--text-primary);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .hs-bubble-npc .dialogue-line {
@@ -365,15 +365,15 @@ body {
   max-width: 75%;
   padding: 10px 14px;
   background: linear-gradient(135deg, #FF7EB3, #FF5E99);
-  color: #0c0e1a;
+  color: #fff;
   font-weight: 500;
   border-radius: 16px 4px 16px 16px;
   margin-bottom: 8px;
   font-size: 14px;
   line-height: 1.5;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 2px 12px rgba(255, 126, 179, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 2px 8px rgba(232, 69, 124, 0.2);
 }
 
 /* ── 系统消息（居中，斜体，淡色）──────────────────── */
@@ -439,7 +439,7 @@ body {
   padding: 8px 12px;
   padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid rgba(var(--primary-rgb), 0.1);
-  background: rgba(12, 14, 26, 0.9);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   flex-shrink: 0;
@@ -478,12 +478,12 @@ body {
   background: linear-gradient(135deg, #FF7EB3, #FF5E99);
   border: none;
   border-radius: 50%;
-  color: #0c0e1a;
+  color: #fff;
   cursor: pointer;
   font-size: 16px;
   flex-shrink: 0;
   transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 2px 10px rgba(255, 126, 179, 0.25);
+  box-shadow: 0 2px 10px rgba(232, 69, 124, 0.2);
 }
 
 .hs-send-btn:hover {
@@ -601,7 +601,7 @@ body {
   gap: 6px;
   padding: 6px 12px;
   border-radius: 100px;
-  background: rgba(21, 25, 40, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -657,7 +657,7 @@ body {
 
 .hs-location-tag:hover {
   border-color: rgba(var(--primary-rgb), 0.3);
-  background: rgba(21, 25, 40, 0.9);
+  background: rgba(255, 240, 243, 0.95);
 }
 
 .hs-location-tag .loc-icon {
@@ -711,14 +711,14 @@ body {
   left: 0;
   right: 0;
   padding: 20px 16px 14px;
-  background: linear-gradient(transparent, rgba(12, 14, 26, 0.92));
+  background: linear-gradient(transparent, rgba(255, 245, 247, 0.92));
 }
 
 .hs-scene-hero .scene-name {
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 /* ================================================================
@@ -772,7 +772,7 @@ body {
    ================================================================ */
 
 .hs-card {
-  background: rgba(21, 25, 40, 0.85);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border);
@@ -811,7 +811,7 @@ body {
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 12px 48px rgba(255, 126, 179, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
 /* ── 结局弹窗 ──────────────────────────────────────── */
@@ -829,7 +829,7 @@ body {
 }
 
 .hs-ending-modal {
-  background: linear-gradient(145deg, rgba(21, 25, 40, 0.96), rgba(12, 14, 26, 0.96));
+  background: rgba(255, 255, 255, 0.96);
   border: 1px solid var(--border-glow);
   border-radius: 24px;
   padding: 32px;
@@ -837,8 +837,8 @@ body {
   width: 90%;
   text-align: center;
   box-shadow:
-    0 16px 56px rgba(255, 126, 179, 0.2),
-    0 0 80px rgba(255, 215, 0, 0.05);
+    0 16px 56px rgba(0, 0, 0, 0.1),
+    0 0 80px rgba(232, 69, 124, 0.05);
 }
 
 /* ================================================================
@@ -851,13 +851,13 @@ body {
   left: 50%;
   transform: translateX(-50%);
   padding: 10px 20px;
-  background: rgba(21, 25, 40, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border-glow);
   border-radius: 12px;
   color: var(--text-primary);
   font-size: 13px;
   z-index: 100;
-  box-shadow: 0 4px 16px rgba(255, 126, 179, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   animation: hsFadeSlideUp 0.3s ease-out;
   pointer-events: none;
 }
@@ -1077,7 +1077,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.06) 50%, transparent 60%);
+  background: linear-gradient(105deg, transparent 40%, rgba(232, 69, 124, 0.04) 50%, transparent 60%);
   animation: hsShimmer 2.5s ease-in-out infinite;
 }
 
@@ -1112,7 +1112,7 @@ body {
 
 .hs-start-bg {
   min-height: 100dvh;
-  background: linear-gradient(165deg, #0c0e1a 0%, #121630 35%, #1a1040 65%, #0c0e1a 100%);
+  background: linear-gradient(165deg, #FFF5F7 0%, #FFF0F3 35%, #FFE8EF 65%, #FFF5F7 100%);
   overflow-y: auto;
   position: relative;
 }
@@ -1134,7 +1134,7 @@ body {
 .hs-menu-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(12, 14, 26, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 50;
@@ -1148,7 +1148,7 @@ body {
 .hs-menu-btn {
   width: 220px;
   padding: 14px 24px;
-  background: rgba(21, 25, 40, 0.8);
+  background: rgba(255, 255, 255, 0.8);
   border: 1px solid var(--border);
   border-radius: 14px;
   color: var(--text-primary);

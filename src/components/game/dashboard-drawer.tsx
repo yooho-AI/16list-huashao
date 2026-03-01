@@ -60,7 +60,7 @@ function FrontPage() {
   const chapter = CHAPTERS.find((c) => currentDay >= c.dayRange[0] && currentDay <= c.dayRange[1]) || CHAPTERS[0]
   const period = PERIODS_LIST[currentPeriodIndex] || PERIODS_LIST[0]
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
       <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--star-gold)', lineHeight: 1, minWidth: 44, textAlign: 'center' }}>
         {currentDay}
       </div>
@@ -139,7 +139,7 @@ function CastGallery() {
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{char.title} · {char.age}岁</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
                 <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>好感</span>
-                <div style={{ flex: 1, height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                <div style={{ flex: 1, height: 6, borderRadius: 3, background: 'rgba(0,0,0,0.06)', overflow: 'hidden' }}>
                   <div style={{ width: `${favor}%`, height: '100%', borderRadius: 3, background: char.themeColor, transition: 'width 0.3s' }} />
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 600, color: char.themeColor, fontVariantNumeric: 'tabular-nums', minWidth: 22, textAlign: 'right' }}>{favor}</span>
@@ -152,7 +152,7 @@ function CastGallery() {
         {charEntries.map((_, i) => (
           <button key={i} onClick={() => setIdx(i)} style={{
             width: i === idx ? 16 : 6, height: 6, borderRadius: 3, border: 'none', padding: 0,
-            background: i === idx ? 'var(--primary)' : 'rgba(255,255,255,0.15)', transition: 'all 0.2s', cursor: 'pointer',
+            background: i === idx ? 'var(--primary)' : 'rgba(0,0,0,0.1)', transition: 'all 0.2s', cursor: 'pointer',
           }} />
         ))}
       </div>
@@ -223,11 +223,11 @@ function ItemGrid() {
         return (
           <div key={item.id} style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '8px 4px',
-            borderRadius: 8, background: 'rgba(255,255,255,0.03)', opacity: qty <= 0 ? 0.35 : 1, position: 'relative',
+            borderRadius: 8, background: 'rgba(232,69,124,0.04)', opacity: qty <= 0 ? 0.35 : 1, position: 'relative',
           }}>
             <span style={{ fontSize: 24, lineHeight: 1 }}>{item.icon}</span>
             <span style={{ fontSize: 10, color: 'var(--text-secondary)', textAlign: 'center' }}>{item.name}</span>
-            {qty > 0 && <span style={{ position: 'absolute', top: 2, right: 4, fontSize: 10, fontWeight: 700, color: 'var(--star-gold)', background: 'rgba(0,0,0,0.5)', borderRadius: 6, padding: '0 4px', lineHeight: '16px' }}>{qty}</span>}
+            {qty > 0 && <span style={{ position: 'absolute', top: 2, right: 4, fontSize: 10, fontWeight: 700, color: 'var(--primary)', background: 'rgba(232,69,124,0.08)', borderRadius: 6, padding: '0 4px', lineHeight: '16px' }}>{qty}</span>}
           </div>
         )
       })}
@@ -243,7 +243,7 @@ function MiniPlayer() {
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0' }}>
       <button onClick={(e) => toggle(e)} style={{
         width: 36, height: 36, borderRadius: '50%', border: 'none', cursor: 'pointer',
-        background: isPlaying ? 'var(--primary)' : 'rgba(255,255,255,0.08)', color: '#fff', fontSize: 16,
+        background: isPlaying ? 'var(--primary)' : 'rgba(0,0,0,0.06)', color: isPlaying ? '#fff' : 'var(--text-secondary)', fontSize: 16,
         display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s',
       }}>
         {isPlaying ? '⏸' : '♪'}
@@ -306,10 +306,10 @@ export default function DashboardDrawer() {
           onClick={toggleDashboard} style={{ position: 'fixed', inset: 0, zIndex: 90, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)' }} />
         <motion.div className="hs-dashboard" initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
           transition={{ type: 'spring', damping: 26, stiffness: 300 }} onClick={(e) => e.stopPropagation()}
-          style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '82vw', maxWidth: 340, zIndex: 91, background: 'var(--bg-card, #1a1028)', borderRight: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '82vw', maxWidth: 340, zIndex: 91, background: 'var(--bg-card, #FFFFFF)', borderRight: '1px solid rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
           {/* Header */}
-          <header style={{ padding: '14px 16px 10px', flexShrink: 0, borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <header style={{ padding: '14px 16px 10px', flexShrink: 0, borderBottom: '1px solid rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--star-gold)' }}>📓 旅程手账</div>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>花儿与少年 · 星光之旅</div>
@@ -320,7 +320,7 @@ export default function DashboardDrawer() {
           {/* Stat pills */}
           <div style={{ display: 'flex', gap: 6, padding: '8px 16px', flexWrap: 'wrap', flexShrink: 0 }}>
             {statPills.map((m) => (
-              <div key={m.key} style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '2px 8px', borderRadius: 12, background: 'rgba(255,255,255,0.04)', fontSize: 11, color: m.color }}>
+              <div key={m.key} style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '2px 8px', borderRadius: 12, background: 'rgba(0,0,0,0.04)', fontSize: 11, color: m.color }}>
                 <span>{m.icon}</span>
                 <span style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{globalResources[m.key as keyof GlobalResources]}</span>
               </div>
