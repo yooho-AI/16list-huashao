@@ -166,44 +166,42 @@ export default function AppShell({ onMenuOpen }: { onMenuOpen: () => void }) {
         {showRecords && (
           <>
             <motion.div
-              className={`${P}-records-backdrop`}
+              className={`${P}-records-overlay`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={toggleRecords}
             />
             <motion.div
-              className={`${P}-records`}
+              className={`${P}-records-sheet`}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             >
-              <div style={{ padding: 16 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                  <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--star-gold)' }}>
-                    📜 旅途记录
-                  </h3>
-                  <button className={`${P}-header-btn`} onClick={toggleRecords}>✕</button>
-                </div>
+              <div className={`${P}-records-header`}>
+                <span className={`${P}-records-title`}>📜 旅途记录</span>
+                <button className={`${P}-records-close`} onClick={toggleRecords}>✕</button>
+              </div>
 
-                <div className={`${P}-records-timeline`}>
-                  {[...storyRecords].reverse().map((record) => (
-                    <div key={record.id} className={`${P}-records-item`}>
-                      <div className={`${P}-records-dot`} />
+              <div className={`${P}-records-timeline`}>
+                {[...storyRecords].reverse().map((record) => (
+                  <div key={record.id} className={`${P}-records-item`}>
+                    <div className={`${P}-records-dot`} />
+                    <div className={`${P}-records-body`}>
                       <div className={`${P}-records-meta`}>
                         Day {record.day} · {record.period}
                       </div>
-                      <div className={`${P}-records-title`}>{record.title}</div>
+                      <div className={`${P}-records-event-title`}>{record.title}</div>
                       <div className={`${P}-records-content`}>{record.content}</div>
                     </div>
-                  ))}
-                  {storyRecords.length === 0 && (
-                    <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 40 }}>
-                      旅途刚刚开始...
-                    </div>
-                  )}
-                </div>
+                  </div>
+                ))}
+                {storyRecords.length === 0 && (
+                  <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 40 }}>
+                    旅途刚刚开始...
+                  </div>
+                )}
               </div>
             </motion.div>
           </>
