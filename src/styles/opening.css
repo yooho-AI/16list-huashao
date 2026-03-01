@@ -6,6 +6,29 @@
  */
 
 /* ================================================================
+   跳过按钮 — 右上角固定
+   ================================================================ */
+
+.hs-skip-btn {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 10;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.06);
+  color: #999;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.hs-skip-btn:active {
+  background: rgba(0, 0, 0, 0.12);
+  color: #666;
+}
+
+/* ================================================================
    Phase 0: 首屏 — 综艺官方海报风
    ================================================================ */
 .hs-landing {

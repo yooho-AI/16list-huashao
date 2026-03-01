@@ -526,6 +526,9 @@ export const useGameStore = create<GameStore>()(
 
         // Check ending
         checkEndingImpl(get(), set)
+
+        // Auto-save
+        get().saveGame()
       } catch (err) {
         set((s) => {
           s.isTyping = false
@@ -655,6 +658,9 @@ export const useGameStore = create<GameStore>()(
       // Check ending after state update
       const state = get()
       checkEndingImpl(state, set)
+
+      // Auto-save
+      get().saveGame()
     },
 
     useItem: (itemId) => {

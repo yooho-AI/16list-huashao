@@ -386,7 +386,7 @@ export default function TabDialogue() {
       <div
         ref={scrollRef}
         className="hs-scrollbar"
-        style={{ flex: 1, overflowY: 'auto', padding: 12 }}
+        style={{ flex: 1, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column' }}
       >
         {messages.map((msg, i) => renderMessage(msg, i))}
         {isTyping && <StreamingMessage content={streamingContent} />}

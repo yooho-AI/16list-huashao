@@ -133,7 +133,7 @@ body {
 .hs-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  height: 100dvh;
   width: 100%;
   background: var(--bg-base);
   overflow: hidden;
@@ -230,6 +230,16 @@ body {
 
 .hs-icon-btn:active {
   background: var(--bg-active);
+}
+
+/* ================================================================
+   Tab Content (主内容区)
+   ================================================================ */
+
+.hs-tab-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
 }
 
 /* ================================================================

@@ -134,6 +134,8 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
   if (phase === 'chat') {
     return (
       <div className="hs-wechat">
+        {/* 跳过按钮 */}
+        <button className="hs-skip-btn" onClick={() => setPhase('makeup')}>跳过 ›</button>
         {/* 微信导航栏 */}
         <div className="hs-wx-nav">
           <div className="hs-wx-nav-back">‹</div>
@@ -209,6 +211,8 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
   if (phase === 'hotsearch') {
     return (
       <div className="hs-weibo">
+        {/* 跳过按钮 */}
+        <button className="hs-skip-btn" onClick={() => setPhase('makeup')}>跳过 ›</button>
         {/* 微博导航 */}
         <div className="hs-wb-nav">
           <div className="hs-wb-search">
