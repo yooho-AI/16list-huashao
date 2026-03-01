@@ -153,7 +153,7 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
         {/* 聊天区域 */}
         <div className="hs-wx-chat">
           {/* 时间戳 */}
-          <div className="hs-wx-timestamp">23:47</div>
+          <div className="hs-wx-timestamp"><span>23:47</span></div>
 
           {/* 消息 */}
           {CHAT_MESSAGES.slice(0, chatIndex).map((msg, i) => (
