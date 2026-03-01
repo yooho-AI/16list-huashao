@@ -93,13 +93,6 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
 
   // ── Phase 0: 首屏标题 ──
   if (phase === 'landing') {
-    const stars = Array.from({ length: 30 }).map(() => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      width: 1.5 + Math.random() * 2,
-      animationDelay: `${Math.random() * 3}s`,
-      animationDuration: `${2 + Math.random() * 3}s`,
-    }))
     return (
       <div className="hs-landing">
         <video
@@ -109,25 +102,16 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
           poster="/video/landing-poster.jpg"
         />
         <div className="hs-landing-overlay" />
-        <div className="hs-landing-bg" />
-        <div className="hs-landing-stars">
-          {stars.map((s, i) => (
-            <div
-              key={i}
-              className="hs-landing-star"
-              style={{
-                left: s.left, top: s.top,
-                width: s.width, height: s.width,
-                animationDelay: s.animationDelay,
-                animationDuration: s.animationDuration,
-              }}
-            />
-          ))}
-        </div>
-        <div className="hs-landing-content">
-          <div className="hs-landing-emoji">✨</div>
+        <motion.div
+          className="hs-landing-content"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          <div className="hs-landing-line" />
           <div className="hs-landing-logo">花儿与少年</div>
           <div className="hs-landing-sub">星 光 之 旅</div>
+          <div className="hs-landing-slogan">七位明星 · 21天异国穷游 · 全程跟拍</div>
           <div className="hs-landing-actions">
             <button
               className="hs-landing-start"
@@ -141,7 +125,7 @@ function OpeningScreen({ onStart }: { onStart: (name: string) => void }) {
               </button>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     )
   }
