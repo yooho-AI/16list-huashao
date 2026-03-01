@@ -512,23 +512,87 @@ body {
 }
 
 /* ================================================================
-   动态选项列表
+   可折叠选项面板
    ================================================================ */
 
-.hs-choice-list {
+/* ── 收起态横条 ── */
+.hs-choices-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin: 4px 12px;
+  background: rgba(var(--primary-rgb), 0.04);
+  border: 1px solid rgba(var(--primary-rgb), 0.12);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hs-choices-bar:active {
+  background: rgba(var(--primary-rgb), 0.08);
+}
+
+.hs-choices-bar:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ── 选项数量徽标 ── */
+.hs-choices-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: rgba(var(--primary-rgb), 0.15);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── 展开态面板 ── */
+.hs-choices-panel {
+  padding: 4px 12px 8px;
+}
+
+.hs-choices-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px 8px;
+  cursor: pointer;
+}
+
+.hs-choices-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.hs-choices-grid {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 8px 16px;
 }
 
-.hs-choice-btn {
+/* ── A/B/C/D 选项卡片 ── */
+.hs-choices-card {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
   background: rgba(var(--primary-rgb), 0.03);
-  border: 1px solid rgba(var(--primary-rgb), 0.15);
+  border: 1px solid rgba(var(--primary-rgb), 0.12);
   border-radius: 12px;
   color: var(--text-primary);
   font-size: 13px;
@@ -538,26 +602,26 @@ body {
   text-align: left;
 }
 
-.hs-choice-btn:active {
+.hs-choices-card:active {
   background: rgba(var(--primary-rgb), 0.1);
   transform: scale(0.98);
 }
 
-.hs-choice-btn:disabled {
+.hs-choices-card:disabled {
   opacity: 0.35;
   pointer-events: none;
 }
 
-.hs-choice-idx {
+.hs-choices-letter {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(var(--primary-rgb), 0.12);
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: rgba(var(--primary-rgb), 0.1);
   color: var(--primary);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   flex-shrink: 0;
 }

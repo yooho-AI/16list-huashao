@@ -72,10 +72,6 @@ export default function AppShell({ onMenuOpen }: { onMenuOpen: () => void }) {
     <div className={`${P}-shell`}>
       {/* ── Header ── */}
       <header className={`${P}-header`}>
-        <button className={`${P}-header-btn`} onClick={toggleDashboard} title="旅程手账">
-          <Notebook size={20} weight="fill" />
-        </button>
-
         <div className={`${P}-header-info`}>
           <span style={{ color: 'var(--star-gold)', fontWeight: 600 }}>
             Day {currentDay}
@@ -95,9 +91,6 @@ export default function AppShell({ onMenuOpen }: { onMenuOpen: () => void }) {
           </button>
           <button className={`${P}-header-btn`} onClick={onMenuOpen} title="菜单">
             <List size={20} />
-          </button>
-          <button className={`${P}-header-btn`} onClick={toggleRecords} title="记录">
-            <Scroll size={20} />
           </button>
         </div>
       </header>
@@ -148,8 +141,15 @@ export default function AppShell({ onMenuOpen }: { onMenuOpen: () => void }) {
         </AnimatePresence>
       </div>
 
-      {/* ── TabBar ── */}
+      {/* ── TabBar (5 items: 手册 + 3 tabs + 事件) ── */}
       <nav className={`${P}-tab-bar`}>
+        <button
+          className={`${P}-tab-item`}
+          onClick={toggleDashboard}
+        >
+          <span><Notebook size={20} weight="fill" /></span>
+          <span style={{ fontSize: 10, marginTop: 2 }}>手册</span>
+        </button>
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -160,6 +160,13 @@ export default function AppShell({ onMenuOpen }: { onMenuOpen: () => void }) {
             <span style={{ fontSize: 10, marginTop: 2 }}>{tab.label}</span>
           </button>
         ))}
+        <button
+          className={`${P}-tab-item`}
+          onClick={toggleRecords}
+        >
+          <span><Scroll size={20} weight="fill" /></span>
+          <span style={{ fontSize: 10, marginTop: 2 }}>事件</span>
+        </button>
       </nav>
 
       {/* ── Dashboard Drawer (Left) ── */}

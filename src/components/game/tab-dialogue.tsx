@@ -14,7 +14,7 @@ import {
   parseStoryParagraph,
   type Message,
 } from '@/lib/store'
-import { Backpack, PaperPlaneRight } from '@phosphor-icons/react'
+import { Backpack, PaperPlaneRight, GameController, CaretUp, CaretDown } from '@phosphor-icons/react'
 
 // ── LetterCard — Welcome message (first system message) ─────────
 
@@ -190,32 +190,57 @@ function StreamingMessage({ content }: { content: string }) {
   )
 }
 
-// ── ChoiceList — Dynamic AI-generated choices ───────────────────
+// ── CollapsibleChoices — Collapsible action panel ───────────────
 
-function ChoiceList({
+const CHOICE_LETTERS = ['A', 'B', 'C', 'D']
+
+function CollapsibleChoices({
   choices,
   onAction,
   disabled,
+  expanded,
+  onToggle,
 }: {
   choices: string[]
   onAction: (text: string) => void
   disabled: boolean
+  expanded: boolean
+  onToggle: () => void
 }) {
   if (choices.length === 0) return null
 
+  if (!expanded) {
+    return (
+      <button className="hs-choices-bar" onClick={onToggle} disabled={disabled}>
+        <GameController size={16} weight="fill" />
+        <span>展开行动选项</span>
+        <span className="hs-choices-count">{choices.length}</span>
+        <CaretUp size={14} />
+      </button>
+    )
+  }
+
   return (
-    <div className="hs-choice-list">
-      {choices.map((action, idx) => (
-        <button
-          key={`${action}-${idx}`}
-          className="hs-choice-btn"
-          disabled={disabled}
-          onClick={() => onAction(action)}
-        >
-          <span className="hs-choice-idx">{idx + 1}</span>
-          {action}
-        </button>
-      ))}
+    <div className="hs-choices-panel">
+      <div className="hs-choices-panel-header" onClick={onToggle}>
+        <span className="hs-choices-panel-title">
+          选择行动 <span className="hs-choices-count">{choices.length}项</span>
+        </span>
+        <CaretDown size={14} style={{ color: 'var(--text-muted)' }} />
+      </div>
+      <div className="hs-choices-grid">
+        {choices.map((action, idx) => (
+          <button
+            key={`${action}-${idx}`}
+            className="hs-choices-card"
+            disabled={disabled}
+            onClick={() => onAction(action)}
+          >
+            <span className="hs-choices-letter">{CHOICE_LETTERS[idx] || idx + 1}</span>
+            {action}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }
@@ -350,7 +375,13 @@ export default function TabDialogue() {
 
   const [input, setInput] = useState('')
   const [showInventory, setShowInventory] = useState(false)
+  const [choicesExpanded, setChoicesExpanded] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  // Auto-collapse choices when AI starts typing
+  useEffect(() => {
+    if (isTyping) setChoicesExpanded(false)
+  }, [isTyping])
 
   // Auto-scroll on new messages
   useEffect(() => {
@@ -392,13 +423,18 @@ export default function TabDialogue() {
         <div style={{ height: 8 }} />
       </div>
 
-      {/* ── Dynamic Choices ── */}
-      <ChoiceList
+      {/* ── Collapsible Choices ── */}
+      <CollapsibleChoices
         choices={choices}
         onAction={(text) => {
-          if (!isTyping) sendMessage(text)
+          if (!isTyping) {
+            setChoicesExpanded(false)
+            sendMessage(text)
+          }
         }}
         disabled={isTyping}
+        expanded={choicesExpanded}
+        onToggle={() => setChoicesExpanded((v) => !v)}
       />
 
       {/* ── Input Area ── */}
