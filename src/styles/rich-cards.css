@@ -283,7 +283,7 @@
 /* ── 7. Record Sheet — 事件记录（右侧抽屉） ────────────── */
 .hs-records-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 50; }
 .hs-records-sheet {
-  position: absolute; top: 0; right: 0; bottom: 0;
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 51;
   width: 85vw; max-width: 380px; background: #FFFFFF;
   display: flex; flex-direction: column;
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
@@ -418,6 +418,7 @@
 /* ── 12. Letter Card — 欢迎信（首条消息） ──────────────── */
 .hs-letter {
   position: relative; align-self: center; width: 92%; max-width: 340px;
+  flex-shrink: 0;
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(232, 69, 124, 0.12);
   border-radius: 14px; padding: 24px 20px;

@@ -497,10 +497,14 @@ export default function App() {
   const initGame = useGameStore((s) => s.initGame)
   const [showMenu, setShowMenu] = useState(false)
 
+  const sendMessage = useGameStore((s) => s.sendMessage)
+
   const handleStart = (name: string) => {
     trackGameStart()
     setPlayerInfo(name)
     initGame()
+    // 自动发送第一条消息触发 AI 开场
+    setTimeout(() => sendMessage('开始游戏'), 500)
   }
 
   if (!gameStarted) {
