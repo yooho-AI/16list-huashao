@@ -91,25 +91,100 @@ function colorizeCharNames(html: string): string {
 
 // ── 选项提取 ──
 
+// Normalize a line: strip markdown bold/italic wrapping, leading dashes/bullets
+function normalizeLine(line: string): string {
+  let s = line.trim()
+  // strip leading "- " or "* " bullets
+  s = s.replace(/^[-*]\s+/, '')
+  // strip markdown bold/italic wrapping: **text** → text, *text* → text
+  s = s.replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1')
+  return s.trim()
+}
+
+// Match a numbered choice line, return extracted text or null
+function matchChoiceLine(raw: string): string | null {
+  const line = normalizeLine(raw)
+  // Patterns: "1. text", "1、text", "1．text", "1) text", "(1) text", "① text"
+  // Also: "A. text", "A、text", "A) text"
+  const patterns = [
+    /^[1-4][\.、．\)]\s*(.+)/,           // 1. / 1、/ 1．/ 1)
+    /^\([1-4]\)\s*(.+)/,                  // (1)
+    /^[A-Da-d][\.、．\)]\s*(.+)/,        // A. / A、/ A)
+    /^\([A-Da-d]\)\s*(.+)/,              // (A)
+    /^[①②③④]\s*(.+)/,                   // ①②③④
+  ]
+  for (const pat of patterns) {
+    const m = line.match(pat)
+    if (m) return m[1].replace(/\*{1,2}/g, '').trim()
+  }
+  return null
+}
+
 export function extractChoices(content: string): {
   cleanContent: string
   choices: string[]
 } {
   const lines = content.split('\n')
-  const choices: string[] = []
-  let choiceStartIdx = lines.length
 
-  // Scan from end for consecutive numbered choice lines
+  // Strategy 1: Scan from end, skip trailing non-choice lines (commentary etc.)
+  // Allow up to 3 trailing non-choice/non-empty lines after choices
+  let choices: string[] = []
+  let choiceStartIdx = lines.length
+  let skippedTrailing = 0
+  const MAX_TRAILING_SKIP = 3
+
   for (let i = lines.length - 1; i >= 0; i--) {
     const trimmed = lines[i].trim()
-    if (!trimmed && choices.length > 0) continue // skip empty lines between choices
-    if (!trimmed && choices.length === 0) continue // skip trailing empty lines
 
-    if (/^[1-4][\.、．]\s*.+/.test(trimmed) || /^[A-Da-d][\.、．]\s*.+/.test(trimmed)) {
-      choices.unshift(trimmed.replace(/^[1-4A-Da-d][\.、．]\s*/, ''))
+    // skip empty lines
+    if (!trimmed) {
+      if (choices.length > 0) continue
+      continue
+    }
+
+    const choiceText = matchChoiceLine(trimmed)
+    if (choiceText) {
+      choices.unshift(choiceText)
       choiceStartIdx = i
+      skippedTrailing = 0 // reset: we found a choice
+    } else if (choices.length === 0 && skippedTrailing < MAX_TRAILING_SKIP) {
+      // Haven't found any choice yet; this might be trailing commentary
+      skippedTrailing++
+      continue
     } else {
       break
+    }
+  }
+
+  // Strategy 2: If end-scan failed, forward-scan the last 20 lines
+  // looking for a block of 2+ consecutive numbered lines
+  if (choices.length < 2) {
+    choices = []
+    choiceStartIdx = lines.length
+    const scanStart = Math.max(0, lines.length - 20)
+    let blockStart = -1
+    const blockChoices: string[] = []
+
+    for (let i = scanStart; i < lines.length; i++) {
+      const trimmed = lines[i].trim()
+      if (!trimmed) continue
+      const choiceText = matchChoiceLine(trimmed)
+      if (choiceText) {
+        if (blockStart < 0) blockStart = i
+        blockChoices.push(choiceText)
+      } else if (blockChoices.length >= 2) {
+        // We have a valid block, stop
+        break
+      } else {
+        // Reset
+        blockStart = -1
+        blockChoices.length = 0
+      }
+    }
+
+    if (blockChoices.length >= 2) {
+      choices = blockChoices
+      choiceStartIdx = blockStart
     }
   }
 
